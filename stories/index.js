@@ -11,6 +11,7 @@ import InterviewerList from "components/InterviewerList.js";
 import Appointment from "components/Appointment/index.js";
 import Header from "components/Appointment/Header.js"
 import Empty from "components/Appointment/Empty.js";
+import Show from "components/Appointment/Show.js";
 
 storiesOf("Button", module)
   .addParameters({
@@ -114,7 +115,7 @@ storiesOf("InterviewerListItem", module)
     />
   ));
 
-// For InterviewerList.js
+// For InterviewerList.js & Appointment/Show.js
 const interviewers = [
   { id: 1, name: "Sylvia Palmer", avatar: "https://i.imgur.com/LpaY82x.png" },
   { id: 2, name: "Tori Malcolm", avatar: "https://i.imgur.com/Nmx0Qxo.png" },
@@ -153,3 +154,11 @@ storiesOf("Appointment", module)
   .add("Appointment with Time", () => <Appointment time="12pm"/>)
   .add("Header", () => <Header time="12pm"/>)
   .add("Empty", () => <Empty onAdd={action("onAdd")}/>)
+  .add("Show", () =>
+    <Show
+      student="Lydia Miller-Jones"
+      interviewer={interviewers[0].name}
+      onEdit={action("onEdit")}
+      onDelete={action("onDelete")}
+    />
+  )
