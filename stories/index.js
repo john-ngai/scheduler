@@ -3,12 +3,13 @@ import { storiesOf } from "@storybook/react";
 import { action } from "@storybook/addon-actions";
 import "index.scss";
 
-import Button from "components/Button";
-import DayListItem from "components/DayListItem";
-import DayList from "components/DayList";
-import InterviewerListItem from "components/InterviewerListItem";
-import InterviewerList from "components/InterviewerList";
-import Appointment from "components/Appointment/index";
+import Button from "components/Button.js";
+import DayListItem from "components/DayListItem.js";
+import DayList from "components/DayList.js";
+import InterviewerListItem from "components/InterviewerListItem.js";
+import InterviewerList from "components/InterviewerList.js";
+import Appointment from "components/Appointment/index.js";
+import Header from "components/Appointment/Header.js"
 
 storiesOf("Button", module)
   .addParameters({
@@ -147,5 +148,6 @@ storiesOf("Appointment", module)
   .addParameters({
     backgrounds: [{ name: "white", value: "#fff", default: true }]
   })
-  .add("Appointment", () => <Appointment />)
-  .add("Appointment with Time", () => <Appointment time="12pm" />)
+  .add("Appointment", () => <Appointment/>)
+  .add("Appointment with Time", () => <Appointment time="12pm"/>)
+  .add("Header", () => <Header time="12pm"/>)
