@@ -4,27 +4,7 @@ import "components/Application.scss";
 import DayList from "components/DayList.js";
 import Appointment from "components/Appointment";
 
-
-// Mock data.
-const days = [
-  {
-    id: 1,
-    name: "Monday",
-    spots: 2,
-  },
-  {
-    id: 2,
-    name: "Tuesday",
-    spots: 5,
-  },
-  {
-    id: 3,
-    name: "Wednesday",
-    spots: 0,
-  },
-];
-
-// Mock data.
+// Temporary mock data.
 const appointments = [
   {
     id: 1,
@@ -66,9 +46,16 @@ const appointments = [
 
 export default function Application(props) {
   const [day, setDay] = useState("Monday");
+  const [days, setDays] = useState([]);
   const listItems = appointments.map(appointment =>
     <Appointment key={appointment.id} {...appointment}/>  
   );
+  
+  useEffect(() => {
+    const url = "/api/days";
+    axios.get(url)
+      .then(res => setDays(res.data));
+  }, []);
 
   return (
     <main className="layout">
