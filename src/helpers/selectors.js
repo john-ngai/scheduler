@@ -16,7 +16,9 @@ export const getAppointmentsForDay = (state, name) => {
     }
     
     // Returns an empty array when the day is not found.
-    match ? null : [];
+    if (!match) {
+      return [];
+    }
   }
 
   for (let id of appointmentIDs) {
