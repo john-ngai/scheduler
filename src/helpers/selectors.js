@@ -28,3 +28,20 @@ export const getAppointmentsForDay = (state, name) => {
 
   return appointmentsArray;
 }
+
+export const getInterview = (state, interview) => {
+  
+  // Returns null if no interview is booked.
+  if (!interview) {
+    return null;
+  }
+  const interviewers = state.interviewers;
+  const id = interview.interviewer;
+  
+  // Returs the origin interview object if the interviewer's id doesn't match any of the existing interviewers.
+  if (!interviewers[id]) {
+    return interview;
+  }
+  interview.interviewer = interviewers[id];
+  return interview;
+}
