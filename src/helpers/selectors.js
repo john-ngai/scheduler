@@ -14,6 +14,7 @@ export const getAppointmentsForDay = (state, name) => {
         match = true;
       }
     }
+    
     // Returns an empty array when the day is not found.
     match ? null : [];
   }
