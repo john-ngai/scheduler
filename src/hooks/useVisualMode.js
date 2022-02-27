@@ -1,6 +1,6 @@
 const useVisualMode = initial => {
   const [mode, setMode] = useState(intial)
-  return {mode};
+  return {mode}; // Can also be written as {mode: mode}.
 }
 
 export default useVisualMode;
