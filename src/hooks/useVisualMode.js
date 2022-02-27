@@ -2,7 +2,7 @@ import {useState} from 'react';
 
 const useVisualMode = initial => {
   const [mode, setMode] = useState(initial)
-  return {mode}; // Can also be written as {mode: mode}.
+  const transition = newState => setMode(newState);
+  return {mode, transition}; // Can also be written as {mode: mode}.
 }
-
 export default useVisualMode;
