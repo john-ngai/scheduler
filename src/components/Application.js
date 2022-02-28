@@ -38,7 +38,7 @@ export default function Application(props) {
     const interview = getInterview(state, appointment.interview);
     
     const bookInterview = (id, interview) => {
-      console.log(id, interview);
+      console.log('bookInterview =', id, interview);
     }  
     
     return <Appointment
