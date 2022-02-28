@@ -10,16 +10,17 @@ const EMPTY = 'EMPTY';
 const SHOW = 'SHOW';
 const CREATE = 'CREATE';
 
+
 export default function Appointment(props) {
   const { mode, transition, back } = useVisualMode(props.interview ? SHOW : EMPTY);
-
+  
   const save = (name, interviewer) => {
     const interview = {
       student: name,
       interviewer
     };
-    props.bookInterview(props.id, interview);
-    transition(SHOW);
+    props.bookInterview(props.id, interview)
+      .then(() => transition(SHOW));
   }
 
   return (
@@ -42,6 +43,8 @@ export default function Appointment(props) {
           onCancel={back}
         />
       }
+
+
     </article>
   );
 }
