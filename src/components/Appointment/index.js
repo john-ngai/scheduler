@@ -28,7 +28,7 @@ export default function Appointment(props) {
 
       {mode === CREATE && 
         <Form
-          interviewers={[]} // Temporarily set as an empty array.
+          interviewers={props.interviewers} // Temporarily set as an empty array.
           onSave={() => console.log("onSave")}
           onCancel={() => back()}
         />
