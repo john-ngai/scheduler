@@ -33,20 +33,28 @@ export default function Application(props) {
 
   const appointments = getAppointmentsForDay(state, state.day);
   const schedule = appointments.map(appointment => {
-    
+
     // Implicitly added to Appointment through {...appointment} === (interview={interview}).
     const interview = getInterview(state, appointment.interview);
-    
+
     const bookInterview = (id, interview) => {
-      console.log('bookInterview =', id, interview);
-    }  
-    
+      const appointment = {
+        ...state.appointments[id],
+        interview: { ...interview }
+      };
+      const appointments = {
+        ...state.appointments,
+        [id]: appointment
+      };
+      setState({ ...state, appointments });
+    }
+
     return <Appointment
       key={appointment.id}
       {...appointment}
-      interviewers={ getInterviewersForDay(state, state.day) }
+      interviewers={getInterviewersForDay(state, state.day)}
       bookInterview={bookInterview}
-      />
+    />
   });
 
   return (
