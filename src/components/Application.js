@@ -37,14 +37,17 @@ export default function Application(props) {
     // Implicitly added to Appointment through {...appointment} === (interview={interview}).
     const interview = getInterview(state, appointment.interview);
     
+    const bookInterview = (id, interview) => {
+      console.log(id, interview);
+    }  
+    
     return <Appointment
       key={appointment.id}
       {...appointment}
       interviewers={ getInterviewersForDay(state, state.day) }
+      bookInterview={bookInterview}
       />
   });
-  
-  console.log('state', state);
 
   return (
     <main className="layout">
