@@ -29,6 +29,47 @@ export const getAppointmentsForDay = (state, name) => {
   return appointmentsArray;
 }
 
+// Receives two arguments, state and day, and return an array of interviewers for the given day.
+export const getInterviewersForDay = (state, name) => {
+  let appointmentIDs;
+  const interviewerIDs = [];
+  const interviewers = [];
+
+  // Returns an empty array if the days data is empty.
+  if (state.days.length === 0) {
+    return [];
+  } else {
+    let match = false;
+    for (const day of state.days) {
+      if (day.name === name) {
+        appointmentIDs = day.appointments;
+        match = true;
+      }
+    }
+    
+    // Returns an empty array when the day is not found.
+    if (!match) {
+      return [];
+    }
+  }
+
+  for (const id of appointmentIDs) {
+    if (state.appointments[id].interview) {
+      interviewerIDs.push(state.appointments[id].interview.interviewer);
+    }
+  }
+
+  if (interviewerIDs.length === 0) {
+    return interviewers;
+  } else {
+    for (const id of interviewerIDs) {
+      interviewers.push(state.interviewers[id]);
+    }
+  }
+
+  return interviewers;
+}
+
 export const getInterview = (state, interview) => {
   
   // Returns null if no interview is booked.
