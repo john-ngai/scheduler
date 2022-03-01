@@ -11,7 +11,6 @@ const useVisualMode = initial => {
     } else {
       setMode(mode);
     }
-    console.log('history:', history);
   }
   
   const back = () => {
@@ -23,7 +22,6 @@ const useVisualMode = initial => {
       setMode(history[0]);
     }
   };
-
   return {mode, transition, back};
 }
 
