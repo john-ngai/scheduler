@@ -19,7 +19,7 @@ export default function(props) {
             className="appointment__actions-button"
             src="images/edit.png"
             alt="Edit"
-            onClick={() => console.log('onEdit - Clicked')}
+            onClick={() => props.onEdit()}
           />
           <img
             className="appointment__actions-button"

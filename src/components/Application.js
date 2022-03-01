@@ -37,7 +37,6 @@ export default function Application(props) {
     // Implicitly added to Appointment through {...appointment} === (interview={interview}).
     const interview = getInterview(state, appointment.interview);
 
-    // Given the appointment id and interview data, update the appointment data.
     const bookInterview = (id, interview) => {
       // Update the interview data for the appointment id.
       const appointment = {
@@ -54,12 +53,10 @@ export default function Application(props) {
     } 
 
     const cancelInterview = id => {
-      // Update the interview data for the appointment id.
       const appointment = {
         ...state.appointments[id],
         interview: null
       };
-      // Update the local state for the appointment id.
       const appointments = {
         ...state.appointments,
         [id]: appointment
