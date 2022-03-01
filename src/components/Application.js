@@ -32,10 +32,8 @@ export default function Application(props) {
   }, []);
 
   const appointments = getAppointmentsForDay(state, state.day);
+  
   const schedule = appointments.map(appointment => {
-
-    // Implicitly added to Appointment through {...appointment} === (interview={interview}).
-    const interview = getInterview(state, appointment.interview);
 
     const bookInterview = (id, interview) => {
       // Update the interview data for the appointment id.
@@ -49,9 +47,9 @@ export default function Application(props) {
         [id]: appointment
       };
       return axios.put(`/api/appointments/${id}`, appointment)
-        .then( () => setState({...state, appointments}) );
+      .then( () => setState({...state, appointments}) );
     } 
-
+    
     const cancelInterview = id => {
       const appointment = {
         ...state.appointments[id],
@@ -62,12 +60,13 @@ export default function Application(props) {
         [id]: appointment
       };
       return axios.delete(`/api/appointments/${id}`)
-        .then( () => setState({...state, appointments}) );
+      .then( () => setState({...state, appointments}) );
     }
-
+  
     return <Appointment
       key={appointment.id}
       {...appointment}
+      interview={getInterview(state, appointment.interview)}
       interviewers={getInterviewersForDay(state, state.day)}
       bookInterview={bookInterview}
       cancelInterview={() => cancelInterview(appointment.id)}
