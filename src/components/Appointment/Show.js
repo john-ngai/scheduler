@@ -25,7 +25,7 @@ export default function(props) {
             className="appointment__actions-button"
             src="images/trash.png"
             alt="Delete"
-            onClick={() => props.onCancel()}
+            onClick={() => props.onDestroy()}
           />
         </section>
       </section>
