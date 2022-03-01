@@ -37,17 +37,35 @@ export default function Application(props) {
     // Implicitly added to Appointment through {...appointment} === (interview={interview}).
     const interview = getInterview(state, appointment.interview);
 
+    // Given the appointment id and interview data, update the appointment data.
     const bookInterview = (id, interview) => {
+      // Update the interview data for the appointment id.
       const appointment = {
         ...state.appointments[id],
         interview: { ...interview }
       };
+      // Update the local state for the appointment id.
       const appointments = {
         ...state.appointments,
         [id]: appointment
       };
       return axios.put(`/api/appointments/${id}`, appointment)
-        .then( () => setState({...state, appointments}) )
+        .then( () => setState({...state, appointments}) );
+    } 
+
+    const cancelInterview = id => {
+      // Update the interview data for the appointment id.
+      const appointment = {
+        ...state.appointments[id],
+        interview: null
+      };
+      // Update the local state for the appointment id.
+      const appointments = {
+        ...state.appointments,
+        [id]: appointment
+      };
+      return axios.delete(`/api/appointments/${id}`)
+        .then( () => setState({...state, appointments}) );
     }
 
     return <Appointment
@@ -55,6 +73,7 @@ export default function Application(props) {
       {...appointment}
       interviewers={getInterviewersForDay(state, state.day)}
       bookInterview={bookInterview}
+      cancelInterview={() => cancelInterview(appointment.id)}
     />
   });
 

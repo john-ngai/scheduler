@@ -19,13 +19,13 @@ export default function(props) {
             className="appointment__actions-button"
             src="images/edit.png"
             alt="Edit"
-            onClick={props.onEdit}
+            onClick={() => console.log('onEdit - Clicked')}
           />
           <img
             className="appointment__actions-button"
             src="images/trash.png"
             alt="Delete"
-            onClick={props.onDelete}
+            onClick={() => props.onCancel()}
           />
         </section>
       </section>
