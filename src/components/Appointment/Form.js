@@ -26,7 +26,8 @@ export default function Form(props) {
             type="text"
             placeholder="Enter Student Name"
             value={student}
-            onChange={event => setStudent(event.target.value)}  
+            onChange={event => setStudent(event.target.value)}
+            data-testid="student-name-input"
           />
         </form>
         <InterviewerList
@@ -35,7 +36,7 @@ export default function Form(props) {
           onChange={setInterviewer}
         />
       </section>
-      <section className="appointment__card-right">
+      <section className="appointment__ca-rd-right">
         <section className="appointment__actions">
           <Button danger onClick={cancel}>Cancel</Button>
           <Button confirm onClick={() => props.onSave(student, interviewer)}>Save</Button>
