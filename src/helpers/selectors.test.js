@@ -3,15 +3,19 @@ import { getAppointmentsForDay, getInterviewersForDay, getInterview } from "help
 const state = {
   days: [
     {
-      id: 1,
-      name: "Monday",
-      appointments: [1, 2, 3]
+      "id": 1,
+      "name": "Monday",
+      "appointments": [1, 2, 3, 4, 5],
+      "interviewers": [3, 4, 7, 8, 10],
+      "spots": 4
     },
     {
-      id: 2,
-      name: "Tuesday",
-      appointments: [4, 5]
-    }
+      "id": 2,
+      "name": "Tuesday",
+      "appointments": [6, 7, 8, 9, 10],
+      "interviewers": [2, 3, 6, 8, 10],
+      "spots": 2
+    },
   ],
   appointments: {
     "1": { id: 1, time: "12pm", interview: null },
@@ -29,7 +33,7 @@ const state = {
     }
   },
   interviewers: {
-    "1": {  
+    "1": {
       "id": 1,
       "name": "Sylvia Palmer",
       "avatar": "https://i.imgur.com/LpaY82x.png"
@@ -49,13 +53,13 @@ test("getAppointmentsForDay returns an array", () => {
 
 test("getAppointmentsForDay returns an array with a length matching the number of appointments for that day", () => {
   const result = getAppointmentsForDay(state, "Monday");
-  expect(result.length).toEqual(3);
+  expect(result.length).toEqual(5);
 });
 
 test("getAppointmentsForDay returns an array containing the correct appointment objects", () => {
   const [first, second] = getAppointmentsForDay(state, "Tuesday");
-  expect(first).toEqual(state.appointments["4"]);
-  expect(second).toEqual(state.appointments["5"]);
+  expect(first).toEqual(state.appointments["6"]);
+  expect(second).toEqual(state.appointments["7"]);
 });
 
 test("getAppointmentsForDay returns an empty array when the days data is empty", () => {
@@ -75,7 +79,7 @@ test("getInterviewersForDay returns an array", () => {
 
 test("getInterviewersForDay returns an array with a length matching the number of interviewers for that day", () => {
   const result = getInterviewersForDay(state, "Monday");
-  expect(result.length).toEqual(1);
+  expect(result.length).toEqual(5);
 });
 
 test("getInterviewersForDay returns an array containing the correct interviewers object(s)", () => {
