@@ -22,7 +22,6 @@ export const getAppointmentsForDay = (state, name) => {
   }
 
   for (let id of appointmentIDs) {
-    id = id.toString();    
     appointmentsArray.push(state.appointments[id]);
   }
 
@@ -36,20 +35,20 @@ export const getInterviewersForDay = (state, name) => {
 
   // Returns an empty array if the days data is empty.
   if (state.days.length === 0) {
-    return [];
+    return interviewers;
+  
   } else {
     let match = false;
     for (const day of state.days) {
       if (day.name === name) {
         interviewerIDs = day.interviewers;
         match = true;
-
       }
     }
     
-    // Returns an empty array when the day is not found.
+    // Returns an empty array if the day is not found.
     if (!match) {
-      return [];
+      return interviewers;
     }
   }
 
