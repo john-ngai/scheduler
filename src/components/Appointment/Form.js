@@ -2,19 +2,21 @@ import React, {useState} from 'react';
 import Button from 'components/Button';
 import InterviewerList from 'components/InterviewerList';
 
+// Display to book or edit an existing appointment.
 export default function Form(props) {
   const [student, setStudent] = useState(props.student || '');
   const [interviewer, setInterviewer] = useState(props.interviewer || null);
   const [error, setError] = useState('');
   
+  // Clears the student and interview values.
   const reset = () => {
     setStudent('');
     setInterviewer(null);
   }
 
+  // Transition back to the previous mode.
   const cancel = () => {
     reset();
-    validate();
     props.onCancel();
   }
 
