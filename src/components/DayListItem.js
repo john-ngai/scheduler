@@ -2,6 +2,7 @@ import React from "react";
 import classNames from 'classnames';
 import "components/DayListItem.scss";
 
+// Describes the number of interview slots remaining for a given day.
 export default function DayListItem(props) {
   let dayClass = classNames("day-list__item", {
     "day-list__item--selected": props.selected,
