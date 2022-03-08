@@ -1,5 +1,6 @@
 import React from 'react';
 
+// Displays a dynamic error message (props.message).
 export default function (props) {
   return (
     <main className="appointment__card appointment__card--error">

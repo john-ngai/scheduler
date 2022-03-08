@@ -1,5 +1,6 @@
 import React from 'react';
 
+// Displays a dynamic loading (saving or canceling) message during async operations.
 export default function Status(props) {
   return (
     <main className="appointment__card appointment__card--status">

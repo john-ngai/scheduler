@@ -1,6 +1,7 @@
 import React from 'react';
 import Button from 'components/Button.js';
 
+// Confirm or cancel an action (edit or delete) from the Form component.
 export default function (props) {
   return (
     <main className="appointment__card appointment__card--confirm">

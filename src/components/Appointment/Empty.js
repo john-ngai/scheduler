@@ -1,5 +1,6 @@
 import React from 'react';
 
+// Displays an empty timeslot that is available for booking.
 export default function Empty(props) {
   return (
     <main className="appointment__add">
