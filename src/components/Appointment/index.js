@@ -15,7 +15,6 @@ const CREATE = 'CREATE';
 const UPDATE = 'UPDATE';
 const SAVING = 'SAVING';
 const ERROR_SAVE = 'ERROR_SAVE';
-const ERROR_SAVE2 = 'ERROR_SAVE2';
 const DELETING = 'DELETING';
 const ERROR_DELETE = 'ERROR_D ELETE';
 const CONFIRM = 'CONFIRM';
@@ -29,9 +28,6 @@ export default function Appointment(props) {
       student: name,
       interviewer
     };
-    if (!interview.student || !interview.interviewer) {
-      return transition(ERROR_SAVE2);
-    }
     transition(SAVING);
     props.bookInterview(props.id, interview)
       .then(() => transition(SHOW))
@@ -85,12 +81,6 @@ export default function Appointment(props) {
         <Error
           onClose={back}
           message="Could not save appointment. Please try again later."
-        />
-      }
-      {mode === ERROR_SAVE2 &&
-        <Error
-          onClose={back}
-          message="Please enter the student's name AND select an interviewer before saving."
         />
       }
 
