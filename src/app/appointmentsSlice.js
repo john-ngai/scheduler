@@ -30,7 +30,10 @@ export const deleteAppointment = createAsyncThunk(
 
 const appointmentsSlice = createSlice({
   name: 'appointments',
-  initialState: {},
+  initialState: {
+    appointmentsList: {},
+    status: 'idle',
+  },
   reducers: {
     interviewAdded(state, action) {
       const { id, interview } = action.payload;
@@ -40,7 +43,7 @@ const appointmentsSlice = createSlice({
   extraReducers(builder) {
     builder
       .addCase(fetchAppointments.fulfilled, (state, action) => {
-        return action.payload;
+        state.appointmentsList = action.payload;
       })
       // addAppointment cases:
       .addCase(addAppointment.pending, () => {
