@@ -76,9 +76,5 @@ export const formatInterview = (state, interview) => {
   const interviewers = state.interviewers;
   const selectedInterviewerId = interview.interviewer;
 
-  // Set the interviewer field from the interview object to
-  // the interviewer's details from state.
-  interview.interviewer = interviewers[selectedInterviewerId];
-
-  return interview;
+  return { ...interview, interviewer: interviewers[selectedInterviewerId] };
 };
