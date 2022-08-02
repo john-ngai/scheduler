@@ -78,7 +78,7 @@ export default appointmentsSlice.reducer;
 
 // **REMINDER**: Refactor with params (state, appointmentIds)
 export const selectAppointmentsByDay = (state) => {
-  const allAppointments = state.appointments;
+  const allAppointments = state.appointments.appointmentsList;
   const selectedAppointments = [];
   const daysList = state.days.daysList;
   const selectedDay = state.days.selectedDay;
