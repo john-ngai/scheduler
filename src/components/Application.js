@@ -25,11 +25,10 @@ export default function Application() {
   const appointments = getAppointmentsForDay(state, reduxState.days.selectedDay);
 
   const schedule = appointments.map((appointment) => {
-    
     return (
       <Appointment
         key={appointment.id}
-        {...appointment}
+        time={appointment.time}
         interview={formatInterview(reduxState, appointment.interview)}
         interviewers={selectInterviewersByDay(reduxState)}
         bookInterview={bookInterview}
