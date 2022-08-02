@@ -9,27 +9,69 @@ export const fetchAppointments = createAsyncThunk(
   }
 );
 
+export const addAppointment = createAsyncThunk(
+  'appointments/addAppointment',
+  async (action) => {
+    const appointment = action.payload;
+    const id = appointment.id;
+    await axios.put(`/api/appointments/${id}`, appointment);
+    return appointment;
+  }
+);
+
+export const deleteAppointment = createAsyncThunk(
+  'appointments/deleteAppointment',
+  async (action) => {
+    const { id } = action.payload;
+    await axios.delete(`/api/appointments/${id}`);
+    return action.payload;
+  }
+);
+
 const appointmentsSlice = createSlice({
   name: 'appointments',
   initialState: {},
   reducers: {
     interviewAdded(state, action) {
-      const { appointmentId, interview } = action.payload;
-      state[appointmentId].interview = interview;
-    },
-    interviewRemoved(state, action) {
-      const { appointmentId } = action.payload;
-      state[appointmentId].interview = null;
+      const { id, interview } = action.payload;
+      state[id].interview = interview;
     },
   },
   extraReducers(builder) {
-    builder.addCase(fetchAppointments.fulfilled, (state, action) => {
-      return action.payload;
-    });
+    builder
+      .addCase(fetchAppointments.fulfilled, (state, action) => {
+        return action.payload;
+      })
+      .addCase(addAppointment.pending, () => {
+        console.log('addAppointment pending...');
+      })
+      .addCase(addAppointment.fulfilled, (state, action) => {
+        console.log('addAppointment fulfilled...');
+        const { id, interview } = action.payload;
+        console.log(id, interview); // Temporary
+        state[id].interview = interview;
+        // return { ...state, [id]: action.payload }
+      })
+
+      .addCase(addAppointment.rejected, (state, action) => {
+        console.log('addAppointment rejected...');
+      })
+      .addCase(deleteAppointment.pending, () => {
+        console.log('deleteAppointment pending...');
+      })
+      .addCase(deleteAppointment.fulfilled, (state, action) => {
+        console.log('deleteAppointment fulfilled...');
+        const { id, interview } = action.payload;
+        // state[id].interview = interview;
+        return { ...state, [id]: action.payload }
+      })
+      .addCase(deleteAppointment.rejected, (state, action) => {
+        console.log('deleteAppointment rejected...');
+      });
   },
 });
 
-export const { interviewAdded, interviewRemoved } = appointmentsSlice.actions;
+export const { interviewAdded } = appointmentsSlice.actions;
 
 export default appointmentsSlice.reducer;
 
