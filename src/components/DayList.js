@@ -26,7 +26,7 @@ export default function DayList() {
     <DayListItem
       key={day.id}
       name={day.name}
-      // spots={day.spots}
+      spots={day.spots}
       selected={day.name === reduxDay}
       setDay={() => dispatch(daySelected({ selectedDay: day.name }))}
     />
