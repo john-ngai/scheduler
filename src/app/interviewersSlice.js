@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 export const fetchInterviewers = createAsyncThunk(
-  'days/fetchInterviewers',
+  'interviewers/fetchInterviewers',
   async () => {
     const response = await axios.get('/api/interviewers');
     return response.data;
