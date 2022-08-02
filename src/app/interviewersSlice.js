@@ -75,6 +75,7 @@ const interviewersSlice = createSlice({
 
 export default interviewersSlice.reducer;
 
+// Refactor with params (state, interviewerIds)
 export const selectInterviewersByDay = (state) => {
   const allInterviewers = state.interviewers;
   const selectedInterviewers = [];
