@@ -10,7 +10,8 @@ import Error from 'components/Appointment/Error';
 import useVisualMode from 'hooks/useVisualMode';
 
 import { interviewAdded, interviewRemoved } from '../../app/appointmentsSlice';
-import { useDispatch } from 'react-redux';
+import { spotsIncremented, spotsDecremented } from '../../app/daysSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
 // Displays the add symbol for an empty/available timeslot.
 const EMPTY = 'EMPTY';
@@ -38,6 +39,7 @@ const CONFIRM = 'CONFIRM';
 
 export default function Appointment(props) {
   const dispatch = useDispatch();
+  const selectedDay = useSelector((state) => state.days.selectedDay);
 
   const { mode, transition, back } = useVisualMode(
     props.interview ? SHOW : EMPTY
@@ -53,7 +55,10 @@ export default function Appointment(props) {
 
     dispatch(interviewAdded({ appointmentId, interview })); // Temporary
     transition(SAVING); // Temporary
-    setTimeout(() => transition(SHOW), 1000); // Temporary
+    setTimeout(() => {
+      dispatch(spotsDecremented({ selectedDay }));
+      transition(SHOW);
+    }, 1000); // Temporary
 
     /* Pending removal
     transition(SAVING);
@@ -67,7 +72,10 @@ export default function Appointment(props) {
     const appointmentId = props.id;
     dispatch(interviewRemoved({ appointmentId })); // Temporary
     transition(DELETING, true); // Temporary
-    setTimeout(() => transition(EMPTY), 1000); // Temporary
+    setTimeout(() => {
+      dispatch(spotsIncremented({ selectedDay }));
+      transition(EMPTY);
+    }, 1000); // Temporary
 
     /* Pending removal
     transition(DELETING, true);
