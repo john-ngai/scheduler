@@ -10,7 +10,7 @@ import useApplicationData from 'hooks/useApplicationData.js';
 import {
   getAppointmentsForDay,
   getInterviewersForDay,
-  formatInterview
+  formatInterview,
 } from '../helpers/selectors.js';
 // Stylesheet
 import 'components/Application.scss';
@@ -21,7 +21,7 @@ export default function Application() {
   const { state, setDay, bookInterview, cancelInterview } =
     useApplicationData();
 
-  const appointments = getAppointmentsForDay(state, state.day);
+  const appointments = getAppointmentsForDay(state, reduxState.days.selectedDay);
 
   const schedule = appointments.map((appointment) => {
     return (
@@ -46,7 +46,7 @@ export default function Application() {
         />
         <hr className="sidebar__separator sidebar--centered" />
         <nav className="sidebar__menu">
-          <DayList days={state.days} value={state.day} onChange={setDay} />
+          <DayList />
         </nav>
         <img
           className="sidebar__lhl sidebar--centered"
