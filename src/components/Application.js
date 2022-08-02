@@ -29,8 +29,8 @@ export default function Application() {
         time={appointment.time}
         interview={formatInterview(reduxState, appointment.interview)} // Bugged
         interviewers={selectInterviewersByDay(reduxState)}
-        // bookInterview={bookInterview}
-        // cancelInterview={() => cancelInterview(appointment.id)}
+        // bookInterview={bookInterview} // Pending removal
+        // cancelInterview={() => cancelInterview(appointment.id)} // Pending removal
       />
     );
   });
