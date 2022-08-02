@@ -42,28 +42,26 @@ const appointmentsSlice = createSlice({
       .addCase(fetchAppointments.fulfilled, (state, action) => {
         return action.payload;
       })
+      // addAppointment cases:
       .addCase(addAppointment.pending, () => {
         console.log('addAppointment pending...');
       })
       .addCase(addAppointment.fulfilled, (state, action) => {
         console.log('addAppointment fulfilled...');
         const { id, interview } = action.payload;
-        console.log(id, interview); // Temporary
         state[id].interview = interview;
-        // return { ...state, [id]: action.payload }
       })
-
       .addCase(addAppointment.rejected, (state, action) => {
         console.log('addAppointment rejected...');
       })
+      // deleteAppointment cases:
       .addCase(deleteAppointment.pending, () => {
         console.log('deleteAppointment pending...');
       })
       .addCase(deleteAppointment.fulfilled, (state, action) => {
         console.log('deleteAppointment fulfilled...');
         const { id, interview } = action.payload;
-        // state[id].interview = interview;
-        return { ...state, [id]: action.payload }
+        state[id].interview = interview;
       })
       .addCase(deleteAppointment.rejected, (state, action) => {
         console.log('deleteAppointment rejected...');
