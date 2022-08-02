@@ -50,12 +50,18 @@ const daysSlice = createSlice({
     daysList,
     selectedDay: 'Monday',
   },
-  reducers: {},
+  reducers: {
+    daySelected(state, action) {
+      state.selectedDay = action.payload;
+    },
+  },
   extraReducers(builder) {
     builder.addCase(fetchDays.fulfilled, (state, action) => {
       state.daysList = action.payload;
     });
   },
 });
+
+export const { daySelected } = daysSlice.actions;
 
 export default daysSlice.reducer;
