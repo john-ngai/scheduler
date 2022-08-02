@@ -37,7 +37,7 @@ const appointmentsSlice = createSlice({
   reducers: {
     interviewAdded(state, action) {
       const { id, interview } = action.payload;
-      state[id].interview = interview;
+      state.appointmentsList[id].interview = interview;
     },
   },
   extraReducers(builder) {
@@ -52,7 +52,7 @@ const appointmentsSlice = createSlice({
       .addCase(addAppointment.fulfilled, (state, action) => {
         console.log('addAppointment fulfilled...');
         const { id, interview } = action.payload;
-        state[id].interview = interview;
+        state.appointmentsList[id].interview = interview;
       })
       .addCase(addAppointment.rejected, (state, action) => {
         console.log('addAppointment rejected...');
@@ -64,7 +64,7 @@ const appointmentsSlice = createSlice({
       .addCase(deleteAppointment.fulfilled, (state, action) => {
         console.log('deleteAppointment fulfilled...');
         const { id, interview } = action.payload;
-        state[id].interview = interview;
+        state.appointmentsList[id].interview = interview;
       })
       .addCase(deleteAppointment.rejected, (state, action) => {
         console.log('deleteAppointment rejected...');
