@@ -9,7 +9,11 @@ import Confirm from 'components/Appointment/Confirm';
 import Error from 'components/Appointment/Error';
 import useVisualMode from 'hooks/useVisualMode';
 
-import { interviewAdded, interviewRemoved } from '../../app/appointmentsSlice';
+import {
+  addAppointment,
+  deleteAppointment,
+  interviewAdded,
+} from '../../app/appointmentsSlice';
 import { spotsIncremented, spotsDecremented } from '../../app/daysSlice';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -40,6 +44,8 @@ const CONFIRM = 'CONFIRM';
 export default function Appointment(props) {
   const dispatch = useDispatch();
   const selectedDay = useSelector((state) => state.days.selectedDay);
+  const allAppointments = useSelector((state) => state.appointments);
+  const appointmentId = props.id;
 
   const { mode, transition, back } = useVisualMode(
     props.interview ? SHOW : EMPTY
@@ -47,42 +53,43 @@ export default function Appointment(props) {
 
   // Create and book a new appointment.
   const save = (name, interviewer) => {
-    const appointmentId = props.id;
-    const interview = {
-      student: name,
-      interviewer,
+    const appointment = {
+      ...allAppointments[appointmentId],
+      interview: {
+        student: name,
+        interviewer,
+      },
     };
 
-    dispatch(interviewAdded({ appointmentId, interview })); // Temporary
-    transition(SAVING); // Temporary
+    dispatch(interviewAdded(appointment)); // No longer needed?
+    // dispatch(addAppointment({ payload: appointment }));
+
+    // Temporary implementation - START
+    transition(SAVING);
     setTimeout(() => {
       dispatch(spotsDecremented({ selectedDay }));
       transition(SHOW);
-    }, 1000); // Temporary
+    }, 1000);
 
-    /* Pending removal
-    transition(SAVING);
-    props.bookInterview(props.id, interview)
-      .then(() => transition(SHOW))
-      .catch(() => transition(ERROR_SAVE, true));/**/
+    // Temporary implementation - END
   };
 
   // Cancel a booked appointment.
   const destroy = () => {
-    const appointmentId = props.id;
-    dispatch(interviewRemoved({ appointmentId })); // Temporary
-    transition(DELETING, true); // Temporary
+    const appointment = {
+      ...allAppointments[appointmentId],
+      interview: null,
+    };
+
+    dispatch(deleteAppointment({ payload: appointment }));
+
+    // Temporary implementation - START
+    transition(DELETING, true);
     setTimeout(() => {
       dispatch(spotsIncremented({ selectedDay }));
       transition(EMPTY);
-    }, 1000); // Temporary
-
-    /* Pending removal
-    transition(DELETING, true);
-    props
-      .cancelInterview()
-      .then(() => transition(EMPTY))
-      .catch(() => transition(ERROR_DELETE, true));/**/
+    }, 1000);
+    // Temporary implementation - END
   };
 
   return (
