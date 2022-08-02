@@ -6,10 +6,11 @@ import DayList from 'components/DayList.js';
 import Appointment from 'components/Appointment';
 // Hook
 import useApplicationData from 'hooks/useApplicationData.js';
+// Redux
+import { selectInterviewersByDay } from '../app/interviewersSlice';
 // Selectors
 import {
   getAppointmentsForDay,
-  getInterviewersForDay,
   formatInterview,
 } from '../helpers/selectors.js';
 // Stylesheet
@@ -24,12 +25,13 @@ export default function Application() {
   const appointments = getAppointmentsForDay(state, reduxState.days.selectedDay);
 
   const schedule = appointments.map((appointment) => {
+    
     return (
       <Appointment
         key={appointment.id}
         {...appointment}
         interview={formatInterview(reduxState, appointment.interview)}
-        interviewers={getInterviewersForDay(state, state.day)}
+        interviewers={selectInterviewersByDay(reduxState)}
         bookInterview={bookInterview}
         cancelInterview={() => cancelInterview(appointment.id)}
       />
