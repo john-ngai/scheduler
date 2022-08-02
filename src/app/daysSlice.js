@@ -55,6 +55,20 @@ const daysSlice = createSlice({
       const { selectedDay } = action.payload;
       state.selectedDay = selectedDay;
     },
+    spotsIncremented(state, action) {
+      const { selectedDay } = action.payload;
+      const dayListItem = state.daysList.find(
+        (day) => day.name === selectedDay
+      );
+      dayListItem.spots++;
+    },
+    spotsDecremented(state, action) {
+      const { selectedDay } = action.payload;
+      const dayListItem = state.daysList.find(
+        (day) => day.name === selectedDay
+      );
+      dayListItem.spots--;
+    },
   },
   extraReducers(builder) {
     builder.addCase(fetchDays.fulfilled, (state, action) => {
@@ -63,6 +77,7 @@ const daysSlice = createSlice({
   },
 });
 
-export const { daySelected } = daysSlice.actions;
+export const { daySelected, spotsIncremented, spotsDecremented } =
+  daysSlice.actions;
 
 export default daysSlice.reducer;
