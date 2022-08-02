@@ -8,31 +8,29 @@ import Appointment from 'components/Appointment';
 import useApplicationData from 'hooks/useApplicationData.js';
 // Redux
 import { selectInterviewersByDay } from '../app/interviewersSlice';
+import { selectAppointmentsByDay } from '../app/appointmentsSlice';
 // Selectors
-import {
-  getAppointmentsForDay,
-  formatInterview,
-} from '../helpers/selectors.js';
+import { formatInterview } from '../helpers/selectors.js';
 // Stylesheet
 import 'components/Application.scss';
 
 export default function Application() {
   const reduxState = useSelector((state) => state); // Temporary
 
-  const { state, setDay, bookInterview, cancelInterview } =
-    useApplicationData();
+  const { bookInterview, cancelInterview } = useApplicationData();
 
-  const appointments = getAppointmentsForDay(state, reduxState.days.selectedDay);
+  const appointments = selectAppointmentsByDay(reduxState);
 
   const schedule = appointments.map((appointment) => {
     return (
       <Appointment
         key={appointment.id}
+        id={appointment.id}
         time={appointment.time}
-        interview={formatInterview(reduxState, appointment.interview)}
+        interview={formatInterview(reduxState, appointment.interview)} // Bugged
         interviewers={selectInterviewersByDay(reduxState)}
-        bookInterview={bookInterview}
-        cancelInterview={() => cancelInterview(appointment.id)}
+        // bookInterview={bookInterview}
+        // cancelInterview={() => cancelInterview(appointment.id)}
       />
     );
   });
