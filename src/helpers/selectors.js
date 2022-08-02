@@ -14,7 +14,7 @@ export const getAppointmentsForDay = (state, name) => {
         match = true;
       }
     }
-    
+
     // Returns an empty array when the day is not found.
     if (!match) {
       return [];
@@ -26,7 +26,7 @@ export const getAppointmentsForDay = (state, name) => {
   }
 
   return appointmentsArray;
-}
+};
 
 // Receives two arguments, state and day, and return an array of interviewers for the given day.
 export const getInterviewersForDay = (state, name) => {
@@ -36,7 +36,6 @@ export const getInterviewersForDay = (state, name) => {
   // Returns an empty array if the days data is empty.
   if (state.days.length === 0) {
     return interviewers;
-  
   } else {
     let match = false;
     for (const day of state.days) {
@@ -45,7 +44,7 @@ export const getInterviewersForDay = (state, name) => {
         match = true;
       }
     }
-    
+
     // Returns an empty array if the day is not found.
     if (!match) {
       return interviewers;
@@ -61,21 +60,25 @@ export const getInterviewersForDay = (state, name) => {
   }
 
   return interviewers;
-}
+};
 
-export const getInterview = (state, interview) => {
-  
-  // Returns null if no interview is booked.
+/**
+ * Returns a formatted interview argument:
+ *  from  { student: String, interviewer: Number }
+ *  to    { student: String, interviewer: { id, name, avatar } }
+ */
+export const formatInterview = (state, interview) => {
+  // If no interview is booked (null), return null.
   if (!interview) {
     return null;
   }
+
   const interviewers = state.interviewers;
-  const id = interview.interviewer;
-  
-  // Returs the origin interview object if the interviewer's id doesn't match any of the existing interviewers.
-  if (!interviewers[id]) {
-    return interview;
-  }
-  interview.interviewer = interviewers[id];
+  const selectedInterviewerId = interview.interviewer;
+
+  // Set the interviewer field from the interview object to
+  // the interviewer's details from state.
+  interview.interviewer = interviewers[selectedInterviewerId];
+
   return interview;
-}
+};
