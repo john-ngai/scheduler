@@ -175,6 +175,10 @@ const appointmentsSlice = createSlice({
       const { appointmentId, interview } = action.payload;
       state[appointmentId].interview = interview;
     },
+    interviewRemoved(state, action) {
+      const { appointmentId } = action.payload;
+      state[appointmentId].interview = null;
+    },
   },
   extraReducers(builder) {
     builder.addCase(fetchAppointments.fulfilled, (state, action) => {
@@ -183,7 +187,7 @@ const appointmentsSlice = createSlice({
   },
 });
 
-export const { interviewAdded } = appointmentsSlice.actions;
+export const { interviewAdded, interviewRemoved } = appointmentsSlice.actions;
 
 export default appointmentsSlice.reducer;
 
