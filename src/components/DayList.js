@@ -1,20 +1,36 @@
 import React from 'react';
-import "components/DayListItem";
+import { useDispatch, useSelector } from 'react-redux';
 import DayListItem from 'components/DayListItem';
+import { daySelected } from '../app/daysSlice';
 
-// Container for each DayListItem.
-export default function DayList(props) {
-  const listItems = props.days.map(day =>
+export default function DayList() {
+  const dispatch = useDispatch();
+
+  const reduxState = useSelector((state) => state);
+  const reduxDays = reduxState.days.daysList;
+  /** reduxDays =
+   * [
+   *   {
+   *     id: Number,
+   *     name: String,
+   *     appointments: Array,
+   *     interviewers: Array,
+   *     spots: Number
+   *   },
+   *   {…}, {…}, {…}, {…}
+   * ]
+   */
+  const reduxDay = reduxState.days.selectedDay;
+
+  const listItems = reduxDays.map((day) => (
     <DayListItem
       key={day.id}
       name={day.name}
       spots={day.spots}
-      selected={day.name === props.value}
-      setDay={() => props.onChange(day.name)}
+      selected={day.name === reduxDay}
+      setDay={() => dispatch(daySelected({ selectedDay: day.name }))}
     />
-  );
+  ));
 
-  return (
-    <ul>{listItems}</ul>
-  );
+  return <ul>{listItems}</ul>;
 }
