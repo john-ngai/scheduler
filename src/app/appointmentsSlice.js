@@ -170,12 +170,19 @@ const initialState = {
 const appointmentsSlice = createSlice({
   name: 'appointments',
   initialState,
-  reducers: {},
+  reducers: {
+    interviewAdded(state, action) {
+      const { appointmentId, interview } = action.payload;
+      state[appointmentId].interview = interview;
+    },
+  },
   extraReducers(builder) {
     builder.addCase(fetchAppointments.fulfilled, (state, action) => {
       return action.payload;
     });
   },
 });
+
+export const { interviewAdded } = appointmentsSlice.actions;
 
 export default appointmentsSlice.reducer;
