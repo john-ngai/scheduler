@@ -52,7 +52,8 @@ const daysSlice = createSlice({
   },
   reducers: {
     daySelected(state, action) {
-      state.selectedDay = action.payload;
+      const { selectedDay } = action.payload;
+      state.selectedDay = selectedDay;
     },
   },
   extraReducers(builder) {
