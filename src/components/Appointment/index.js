@@ -9,6 +9,9 @@ import Confirm from 'components/Appointment/Confirm';
 import Error from 'components/Appointment/Error';
 import useVisualMode from 'hooks/useVisualMode';
 
+import { interviewAdded } from '../../app/appointmentsSlice';
+import { useDispatch } from 'react-redux';
+
 // Displays the add symbol for an empty/available timeslot.
 const EMPTY = 'EMPTY';
 
@@ -34,27 +37,38 @@ const ERROR_DELETE = 'ERROR_DELETE';
 const CONFIRM = 'CONFIRM';
 
 export default function Appointment(props) {
-  const { mode, transition, back } = useVisualMode(props.interview ? SHOW : EMPTY);
+  const dispatch = useDispatch();
+
+  const { mode, transition, back } = useVisualMode(
+    props.interview ? SHOW : EMPTY
+  );
 
   // Create and book a new appointment.
   const save = (name, interviewer) => {
+    const appointmentId = props.id;
     const interview = {
       student: name,
-      interviewer
+      interviewer,
     };
-    transition(SAVING);
+
+    dispatch(interviewAdded({ appointmentId, interview })); // Temporary
+    transition(SAVING); // Temporary
+    setTimeout(() => transition(SHOW), 1000); // Temporary
+
+    /*transition(SAVING);
     props.bookInterview(props.id, interview)
       .then(() => transition(SHOW))
-      .catch(() => transition(ERROR_SAVE, true));
-  }
+      .catch(() => transition(ERROR_SAVE, true));/**/
+  };
 
   // Cancel a booked appointment.
   const destroy = () => {
     transition(DELETING, true);
-    props.cancelInterview()
+    props
+      .cancelInterview()
       .then(() => transition(EMPTY))
       .catch(() => transition(ERROR_DELETE, true));
-  }
+  };
 
   return (
     <article className="appointment">
@@ -62,24 +76,20 @@ export default function Appointment(props) {
 
       {mode === EMPTY && <Empty onAdd={() => transition(CREATE)} />}
 
-      {mode === SHOW &&
+      {mode === SHOW && (
         <Show
           student={props.interview.student}
           interviewer={props.interview.interviewer.name}
           onEdit={() => transition(UPDATE)}
           onDestroy={() => transition(CONFIRM)}
         />
-      }
+      )}
 
-      {mode === CREATE &&
-        <Form
-          interviewers={props.interviewers}
-          onSave={save}
-          onCancel={back}
-        />
-      }
+      {mode === CREATE && (
+        <Form interviewers={props.interviewers} onSave={save} onCancel={back} />
+      )}
 
-      {mode === UPDATE &&
+      {mode === UPDATE && (
         <Form
           interviewers={props.interviewers}
           student={props.interview.student}
@@ -87,33 +97,33 @@ export default function Appointment(props) {
           onSave={save}
           onCancel={back}
         />
-      }
+      )}
 
       {mode === SAVING && <Status message="Saving" />}
-      
-      {mode === ERROR_SAVE &&
+
+      {mode === ERROR_SAVE && (
         <Error
           onClose={back}
           message="Could not save appointment. Please try again later."
         />
-      }
+      )}
 
-      {mode === CONFIRM &&
+      {mode === CONFIRM && (
         <Confirm
-        message="Are you sure you would like to cancel?"
-        onCancel={back}
-        onConfirm={destroy}
+          message="Are you sure you would like to cancel?"
+          onCancel={back}
+          onConfirm={destroy}
         />
-      }
-      
+      )}
+
       {mode === DELETING && <Status message="Deleting" />}
-      
-      {mode === ERROR_DELETE &&
+
+      {mode === ERROR_DELETE && (
         <Error
           onClose={back}
           message="Could not cancel appointment. Please try again later."
         />
-      }
+      )}
     </article>
   );
 }
