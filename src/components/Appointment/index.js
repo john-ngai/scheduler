@@ -9,7 +9,7 @@ import Confirm from 'components/Appointment/Confirm';
 import Error from 'components/Appointment/Error';
 import useVisualMode from 'hooks/useVisualMode';
 
-import { interviewAdded } from '../../app/appointmentsSlice';
+import { interviewAdded, interviewRemoved } from '../../app/appointmentsSlice';
 import { useDispatch } from 'react-redux';
 
 // Displays the add symbol for an empty/available timeslot.
@@ -55,7 +55,8 @@ export default function Appointment(props) {
     transition(SAVING); // Temporary
     setTimeout(() => transition(SHOW), 1000); // Temporary
 
-    /*transition(SAVING);
+    /* Pending removal
+    transition(SAVING);
     props.bookInterview(props.id, interview)
       .then(() => transition(SHOW))
       .catch(() => transition(ERROR_SAVE, true));/**/
@@ -63,11 +64,17 @@ export default function Appointment(props) {
 
   // Cancel a booked appointment.
   const destroy = () => {
+    const appointmentId = props.id;
+    dispatch(interviewRemoved({ appointmentId })); // Temporary
+    transition(DELETING, true); // Temporary
+    setTimeout(() => transition(EMPTY), 1000); // Temporary
+
+    /* Pending removal
     transition(DELETING, true);
     props
       .cancelInterview()
       .then(() => transition(EMPTY))
-      .catch(() => transition(ERROR_DELETE, true));
+      .catch(() => transition(ERROR_DELETE, true));/**/
   };
 
   return (
