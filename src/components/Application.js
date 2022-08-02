@@ -1,29 +1,39 @@
-import React from "react";
-import "components/Application.scss";
-import DayList from "components/DayList.js";
-import Appointment from "components/Appointment";
-import { getAppointmentsForDay, getInterviewersForDay, getInterview } from "../helpers/selectors.js";
-import useApplicationData from "hooks/useApplicationData.js";
+// Packages
+import React from 'react';
+import { useSelector } from 'react-redux';
+// Components
+import DayList from 'components/DayList.js';
+import Appointment from 'components/Appointment';
+// Hook
+import useApplicationData from 'hooks/useApplicationData.js';
+// Selectors
+import {
+  getAppointmentsForDay,
+  getInterviewersForDay,
+  formatInterview
+} from '../helpers/selectors.js';
+// Stylesheet
+import 'components/Application.scss';
 
-export default function Application(props) {
-  const {
-    state,
-    setDay,
-    bookInterview,
-    cancelInterview
-  } = useApplicationData();
-  
+export default function Application() {
+  const reduxState = useSelector((state) => state); // Temporary
+
+  const { state, setDay, bookInterview, cancelInterview } =
+    useApplicationData();
+
   const appointments = getAppointmentsForDay(state, state.day);
 
-  const schedule = appointments.map(appointment => {
-    return <Appointment
-      key={appointment.id}
-      {...appointment}
-      interview={getInterview(state, appointment.interview)}
-      interviewers={getInterviewersForDay(state, state.day)}
-      bookInterview={bookInterview}
-      cancelInterview={() => cancelInterview(appointment.id)}
-    />
+  const schedule = appointments.map((appointment) => {
+    return (
+      <Appointment
+        key={appointment.id}
+        {...appointment}
+        interview={formatInterview(reduxState, appointment.interview)}
+        interviewers={getInterviewersForDay(state, state.day)}
+        bookInterview={bookInterview}
+        cancelInterview={() => cancelInterview(appointment.id)}
+      />
+    );
   });
 
   return (
@@ -36,11 +46,7 @@ export default function Application(props) {
         />
         <hr className="sidebar__separator sidebar--centered" />
         <nav className="sidebar__menu">
-          <DayList
-            days={state.days}
-            value={state.day}
-            onChange={setDay}
-          />
+          <DayList days={state.days} value={state.day} onChange={setDay} />
         </nav>
         <img
           className="sidebar__lhl sidebar--centered"
