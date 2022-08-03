@@ -1,5 +1,13 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import {
+  createEntityAdapter,
+  createAsyncThunk,
+  createSlice,
+} from '@reduxjs/toolkit';
 import axios from 'axios';
+
+const appointmentsAdapter = createEntityAdapter({
+  sortComparer: (a, b) => a.id.localeCompare(b.id),
+});
 
 export const fetchAppointments = createAsyncThunk(
   'appointments/fetchAppointments',
@@ -30,20 +38,12 @@ export const deleteAppointment = createAsyncThunk(
 
 const appointmentsSlice = createSlice({
   name: 'appointments',
-  initialState: {
-    appointmentsList: {},
-    status: 'idle',
-  },
-  reducers: {
-    interviewAdded(state, action) {
-      const { id, interview } = action.payload;
-      state.appointmentsList[id].interview = interview;
-    },
-  },
+  initialState: appointmentsAdapter.getInitialState(),
+  reducers: {},
   extraReducers(builder) {
     builder
       .addCase(fetchAppointments.fulfilled, (state, action) => {
-        state.appointmentsList = action.payload;
+        return action.payload;
       })
       // addAppointment cases:
       .addCase(addAppointment.pending, () => {
@@ -52,9 +52,9 @@ const appointmentsSlice = createSlice({
       .addCase(addAppointment.fulfilled, (state, action) => {
         console.log('addAppointment fulfilled...');
         const { id, interview } = action.payload;
-        state.appointmentsList[id].interview = interview;
+        state[id].interview = interview;
       })
-      .addCase(addAppointment.rejected, (state, action) => {
+      .addCase(addAppointment.rejected, () => {
         console.log('addAppointment rejected...');
       })
       // deleteAppointment cases:
@@ -64,9 +64,9 @@ const appointmentsSlice = createSlice({
       .addCase(deleteAppointment.fulfilled, (state, action) => {
         console.log('deleteAppointment fulfilled...');
         const { id, interview } = action.payload;
-        state.appointmentsList[id].interview = interview;
+        state[id].interview = interview;
       })
-      .addCase(deleteAppointment.rejected, (state, action) => {
+      .addCase(deleteAppointment.rejected, () => {
         console.log('deleteAppointment rejected...');
       });
   },
@@ -78,7 +78,7 @@ export default appointmentsSlice.reducer;
 
 // **REMINDER**: Refactor with params (state, appointmentIds)
 export const selectAppointmentsByDay = (state) => {
-  const allAppointments = state.appointments.appointmentsList;
+  const allAppointments = state.appointments;
   const selectedAppointments = [];
   const daysList = state.days.daysList;
   const selectedDay = state.days.selectedDay;

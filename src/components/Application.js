@@ -33,7 +33,7 @@ export default function Application() {
   let schedule = null;
 
   if (
-    Object.keys(reduxState.appointments.appointmentsList).length !== 0 &&
+    Object.keys(reduxState.appointments).length !== 0 &&
     Object.keys(reduxState.interviewers).length !== 0
   ) {
     schedule = appointments.map((appointment) => {
