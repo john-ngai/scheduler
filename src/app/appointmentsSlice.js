@@ -1,5 +1,13 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import {
+  createEntityAdapter,
+  createAsyncThunk,
+  createSlice,
+} from '@reduxjs/toolkit';
 import axios from 'axios';
+
+const appointmentsAdapter = createEntityAdapter({
+  sortComparer: (a, b) => a.id.localeCompare(b.id),
+});
 
 export const fetchAppointments = createAsyncThunk(
   'appointments/fetchAppointments',
@@ -30,13 +38,8 @@ export const deleteAppointment = createAsyncThunk(
 
 const appointmentsSlice = createSlice({
   name: 'appointments',
-  initialState: {},
-  reducers: {
-    interviewAdded(state, action) {
-      const { id, interview } = action.payload;
-      state[id].interview = interview;
-    },
-  },
+  initialState: appointmentsAdapter.getInitialState(),
+  reducers: {},
   extraReducers(builder) {
     builder
       .addCase(fetchAppointments.fulfilled, (state, action) => {
@@ -51,7 +54,7 @@ const appointmentsSlice = createSlice({
         const { id, interview } = action.payload;
         state[id].interview = interview;
       })
-      .addCase(addAppointment.rejected, (state, action) => {
+      .addCase(addAppointment.rejected, () => {
         console.log('addAppointment rejected...');
       })
       // deleteAppointment cases:
@@ -63,7 +66,7 @@ const appointmentsSlice = createSlice({
         const { id, interview } = action.payload;
         state[id].interview = interview;
       })
-      .addCase(deleteAppointment.rejected, (state, action) => {
+      .addCase(deleteAppointment.rejected, () => {
         console.log('deleteAppointment rejected...');
       });
   },
