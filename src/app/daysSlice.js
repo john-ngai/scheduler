@@ -51,3 +51,11 @@ export const selectAppointmentIdsByDay = (state) => {
   const appointmentIds = selectedDayList.appointments;
   return appointmentIds;
 };
+
+export const selectInterviewerIdsByDay = (state) => {
+  const daysList = state.days.daysList;
+  const selectedDay = state.days.selectedDay;
+  const selectedDayList = daysList.find((day) => day.name === selectedDay);
+  const interviewerIds = selectedDayList.interviewers;
+  return interviewerIds;
+};
