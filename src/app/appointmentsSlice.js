@@ -43,6 +43,7 @@ const appointmentsSlice = createSlice({
   name: 'appointments',
   initialState: {},
   reducers: {
+    // Maybe rename to changeVisualMode?
     updateVisualMode(state, action) {
       const { id, visualMode } = action.payload;
       state[id].visualMode = visualMode;
