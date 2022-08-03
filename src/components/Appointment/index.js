@@ -12,7 +12,7 @@ import Error from 'components/Appointment/Error';
 // Hook
 import useVisualMode from 'hooks/useVisualMode';
 // Redux
-import { addAppointment, deleteAppointment } from '../../app/appointmentsSlice';
+import { addAppointment, deleteAppointment, updateVisualMode } from '../../app/appointmentsSlice';
 import { spotsIncremented, spotsDecremented } from '../../app/daysSlice';
 // Stylesheet
 import 'components/Appointment/styles.scss';
@@ -61,7 +61,7 @@ export default function Appointment(props) {
     setTimeout(() => {
       dispatch(spotsDecremented({ selectedDay }));
       transition(SHOW);
-    }, 3000); /** */
+    }, 2000); /** */
     // Temporary implementation - END
   };
 
@@ -73,13 +73,12 @@ export default function Appointment(props) {
     };
 
     dispatch(deleteAppointment({ payload: appointment }));
-
-    // Temporary implementation - START
     transition(DELETING, true);
+    // Temporary implementation - START
     setTimeout(() => {
       dispatch(spotsIncremented({ selectedDay }));
       transition(EMPTY);
-    }, 3000); /** */
+    }, 2000); /** */
     // Temporary implementation - END
   };
 
@@ -87,7 +86,10 @@ export default function Appointment(props) {
     <article className="appointment">
       <Header time={props.time} />
 
-      {mode === EMPTY && <Empty onAdd={() => transition(CREATE)} />}
+      {mode === EMPTY && <Empty onAdd={() => {
+        dispatch(updateVisualMode({ id: appointmentId, visualMode: 'CREATE' }))
+        transition(CREATE);
+        }} />}
 
       {mode === SHOW && (
         <Show
