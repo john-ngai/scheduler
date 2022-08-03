@@ -36,7 +36,6 @@ export default function Application() {
     Object.keys(reduxState.appointments).length !== 0 &&
     Object.keys(reduxState.interviewers).length !== 0
   ) {
-    console.log('inside schedule modifier...');
     schedule = appointments.map((appointment) => {
       return (
         <Appointment
