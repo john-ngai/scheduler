@@ -1,5 +1,7 @@
+// Packages
 import React from 'react';
-import 'components/Appointment/styles.scss';
+import { useDispatch, useSelector } from 'react-redux';
+// Components
 import Header from 'components/Appointment/Header';
 import Empty from 'components/Appointment/Empty';
 import Show from 'components/Appointment/Show';
@@ -7,15 +9,13 @@ import Form from 'components/Appointment/Form';
 import Status from 'components/Appointment/Status';
 import Confirm from 'components/Appointment/Confirm';
 import Error from 'components/Appointment/Error';
+// Hook
 import useVisualMode from 'hooks/useVisualMode';
-
-import {
-  addAppointment,
-  deleteAppointment,
-  interviewAdded,
-} from '../../app/appointmentsSlice';
+// Redux
+import { addAppointment, deleteAppointment } from '../../app/appointmentsSlice';
 import { spotsIncremented, spotsDecremented } from '../../app/daysSlice';
-import { useDispatch, useSelector } from 'react-redux';
+// Stylesheet
+import 'components/Appointment/styles.scss';
 
 // Displays the add symbol for an empty/available timeslot.
 const EMPTY = 'EMPTY';
@@ -60,17 +60,14 @@ export default function Appointment(props) {
         interviewer,
       },
     };
-
-    dispatch(interviewAdded(appointment)); // No longer needed?
-    // dispatch(addAppointment({ payload: appointment }));
+    dispatch(addAppointment({ payload: appointment }));
 
     // Temporary implementation - START
     transition(SAVING);
     setTimeout(() => {
       dispatch(spotsDecremented({ selectedDay }));
       transition(SHOW);
-    }, 1000);
-
+    }, 3000); /** */
     // Temporary implementation - END
   };
 
@@ -87,8 +84,9 @@ export default function Appointment(props) {
     transition(DELETING, true);
     setTimeout(() => {
       dispatch(spotsIncremented({ selectedDay }));
+      console.log('transitiong(EMPTY) called...');
       transition(EMPTY);
-    }, 1000);
+    }, 3000); /** */
     // Temporary implementation - END
   };
 
