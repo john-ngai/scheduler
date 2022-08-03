@@ -43,3 +43,11 @@ export const { daySelected, spotsIncremented, spotsDecremented } =
   daysSlice.actions;
 
 export default daysSlice.reducer;
+
+export const selectAppointmentIdsByDay = (state) => {
+  const daysList = state.days.daysList;
+  const selectedDay = state.days.selectedDay;
+  const selectedDayList = daysList.find((day) => day.name === selectedDay);
+  const appointmentIds = selectedDayList.appointments;
+  return appointmentIds;
+};
