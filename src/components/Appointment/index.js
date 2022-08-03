@@ -19,25 +19,19 @@ import 'components/Appointment/styles.scss';
 
 // Displays the add symbol for an empty/available timeslot.
 const EMPTY = 'EMPTY';
-
 // Displays the appoint details (student & interviewer).
 const SHOW = 'SHOW';
-
 // Displays a form to create an existing appointment.
 const CREATE = 'CREATE';
-
 // Displays a form to edit an appointment with the
 // existing data already filled as placeholders.
 const UPDATE = 'UPDATE';
-
 // Temporarily displays an animated status message.
 const SAVING = 'SAVING';
 const DELETING = 'DELETING';
-
 // Displays an appropriate error message and button to close it.
 const ERROR_SAVE = 'ERROR_SAVE';
 const ERROR_DELETE = 'ERROR_DELETE';
-
 // Displays a confirm page with an option to proceed or cancel.
 const CONFIRM = 'CONFIRM';
 
@@ -84,7 +78,7 @@ export default function Appointment(props) {
     transition(DELETING, true);
     setTimeout(() => {
       dispatch(spotsIncremented({ selectedDay }));
-      console.log('transitiong(EMPTY) called...');
+      console.log('transiting(EMPTY) called...');
       transition(EMPTY);
     }, 3000); /** */
     // Temporary implementation - END
