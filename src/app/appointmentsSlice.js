@@ -25,7 +25,7 @@ export const addAppointment = createAsyncThunk(
   async (action) => {
     const appointment = action.payload;
     const id = appointment.id;
-    await axios.put(`/api/appointments/${id}`, appointment); // Temporarily disabled for testing
+    await axios.put(`/api/appointments/${id}`, appointment);
     return appointment;
   }
 );
@@ -34,7 +34,7 @@ export const deleteAppointment = createAsyncThunk(
   'appointments/deleteAppointment',
   async (action) => {
     const { id } = action.payload;
-    await axios.delete(`/api/appointments/${id}`); // Temporarily disabled for testing
+    await axios.delete(`/api/appointments/${id}`);
     return action.payload;
   }
 );
@@ -42,43 +42,53 @@ export const deleteAppointment = createAsyncThunk(
 const appointmentsSlice = createSlice({
   name: 'appointments',
   initialState: {},
-  reducers: {},
+  reducers: {
+    updateVisualMode(state, action) {
+      const { id, visualMode } = action.payload;
+      state[id].visualMode = visualMode;
+    },
+  },
   extraReducers(builder) {
     builder
       .addCase(fetchAppointments.fulfilled, (state, action) => {
         return action.payload;
       })
-      .addCase(addAppointment.pending, () => {
-        console.log('addAppointment pending...');
+      .addCase(addAppointment.pending, (state, action) => {
+        console.log('addAppointment pending...'); // Temporary
+        const appointment = action.meta.arg.payload;
+        const { id } = appointment;
+        state[id].visualMode = 'SAVING';
       })
       .addCase(addAppointment.fulfilled, (state, action) => {
-        console.log('addAppointment fulfilled...');
+        console.log('addAppointment fulfilled...'); // Temporary
         const { id, interview } = action.payload;
         state[id].interview = interview;
+        state[id].visualMode = 'SHOW';
       })
       .addCase(addAppointment.rejected, () => {
-        console.log('addAppointment rejected...');
+        console.log('addAppointment rejected...'); // Temporary
       })
 
       .addCase(deleteAppointment.pending, (state) => {
-        console.log('deleteAppointment pending...');
+        console.log('deleteAppointment pending...'); // Temporary
         state.status = 'pending';
       })
       .addCase(deleteAppointment.fulfilled, (state, action) => {
-        console.log('deleteAppointment fulfilled...');
+        console.log('deleteAppointment fulfilled...'); // Temporary
         const { id, interview } = action.payload;
         state[id].interview = interview;
         state.status = 'fulfilled';
       })
       .addCase(deleteAppointment.rejected, () => {
-        console.log('deleteAppointment rejected...');
+        console.log('deleteAppointment rejected...'); // Temporary
       });
   },
 });
 
+export const { updateVisualMode } = appointmentsSlice.actions;
+
 export default appointmentsSlice.reducer;
 
-// **REMINDER**: Refactor with params (state, appointmentIds)
 export const selectAppointmentsByDay = (state) => {
   const allAppointments = state.appointments;
   const selectedAppointments = [];
