@@ -78,7 +78,6 @@ export default function Appointment(props) {
     transition(DELETING, true);
     setTimeout(() => {
       dispatch(spotsIncremented({ selectedDay }));
-      console.log('transiting(EMPTY) called...');
       transition(EMPTY);
     }, 3000); /** */
     // Temporary implementation - END
