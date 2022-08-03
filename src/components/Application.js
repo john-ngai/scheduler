@@ -14,8 +14,8 @@ import {
   fetchInterviewers,
   selectInterviewersByDay,
 } from '../app/interviewersSlice';
-// Helper(s)
-import { formatInterview } from '../helpers/selectors.js';
+// Helper functions
+import { isStateLoaded, formatInterview } from '../helpers';
 // Stylesheet
 import 'components/Application.scss';
 
@@ -28,22 +28,19 @@ export default function Application() {
     dispatch(fetchInterviewers());
   }, [dispatch]);
 
-  const reduxState = useSelector((state) => state); // Temporary
-  const appointments = selectAppointmentsByDay(reduxState);
+  const state = useSelector((state) => state);
   let schedule = null;
 
-  if (
-    Object.keys(reduxState.appointments).length !== 0 &&
-    Object.keys(reduxState.interviewers).length !== 0
-  ) {
+  if (isStateLoaded(state)) {
+    const appointments = selectAppointmentsByDay(state);
     schedule = appointments.map((appointment) => {
       return (
         <Appointment
           key={appointment.id}
           id={appointment.id}
           time={appointment.time}
-          interview={formatInterview(reduxState, appointment.interview)}
-          interviewers={selectInterviewersByDay(reduxState)}
+          interview={formatInterview(state, appointment.interview)}
+          interviewers={selectInterviewersByDay(state)}
         />
       );
     });
