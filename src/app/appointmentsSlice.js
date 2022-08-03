@@ -5,7 +5,18 @@ export const fetchAppointments = createAsyncThunk(
   'appointments/fetchAppointments',
   async () => {
     const response = await axios.get('/api/appointments');
-    return response.data;
+    const appointments = response.data;
+
+    // Add a conditional 'visualMode' property to each appointment object.
+    for (const id in appointments) {
+      if (appointments[id].interview) {
+        appointments[id].visualMode = 'SHOW';
+      } else {
+        appointments[id].visualMode = 'EMPTY';
+      }
+    }
+
+    return appointments;
   }
 );
 
@@ -14,7 +25,7 @@ export const addAppointment = createAsyncThunk(
   async (action) => {
     const appointment = action.payload;
     const id = appointment.id;
-    await axios.put(`/api/appointments/${id}`, appointment);
+    await axios.put(`/api/appointments/${id}`, appointment); // Temporarily disabled for testing
     return appointment;
   }
 );
@@ -23,7 +34,7 @@ export const deleteAppointment = createAsyncThunk(
   'appointments/deleteAppointment',
   async (action) => {
     const { id } = action.payload;
-    await axios.delete(`/api/appointments/${id}`);
+    await axios.delete(`/api/appointments/${id}`); // Temporarily disabled for testing
     return action.payload;
   }
 );
@@ -48,21 +59,22 @@ const appointmentsSlice = createSlice({
       .addCase(addAppointment.rejected, () => {
         console.log('addAppointment rejected...');
       })
-      .addCase(deleteAppointment.pending, () => {
+
+      .addCase(deleteAppointment.pending, (state) => {
         console.log('deleteAppointment pending...');
+        state.status = 'pending';
       })
       .addCase(deleteAppointment.fulfilled, (state, action) => {
         console.log('deleteAppointment fulfilled...');
         const { id, interview } = action.payload;
         state[id].interview = interview;
+        state.status = 'fulfilled';
       })
       .addCase(deleteAppointment.rejected, () => {
         console.log('deleteAppointment rejected...');
       });
   },
 });
-
-export const { interviewAdded } = appointmentsSlice.actions;
 
 export default appointmentsSlice.reducer;
 
