@@ -30,20 +30,17 @@ export const deleteAppointment = createAsyncThunk(
 
 const appointmentsSlice = createSlice({
   name: 'appointments',
-  initialState: {
-    appointmentsList: {},
-    status: 'idle',
-  },
+  initialState: {},
   reducers: {
     interviewAdded(state, action) {
       const { id, interview } = action.payload;
-      state.appointmentsList[id].interview = interview;
+      state[id].interview = interview;
     },
   },
   extraReducers(builder) {
     builder
       .addCase(fetchAppointments.fulfilled, (state, action) => {
-        state.appointmentsList = action.payload;
+        return action.payload;
       })
       // addAppointment cases:
       .addCase(addAppointment.pending, () => {
@@ -52,7 +49,7 @@ const appointmentsSlice = createSlice({
       .addCase(addAppointment.fulfilled, (state, action) => {
         console.log('addAppointment fulfilled...');
         const { id, interview } = action.payload;
-        state.appointmentsList[id].interview = interview;
+        state[id].interview = interview;
       })
       .addCase(addAppointment.rejected, (state, action) => {
         console.log('addAppointment rejected...');
@@ -64,7 +61,7 @@ const appointmentsSlice = createSlice({
       .addCase(deleteAppointment.fulfilled, (state, action) => {
         console.log('deleteAppointment fulfilled...');
         const { id, interview } = action.payload;
-        state.appointmentsList[id].interview = interview;
+        state[id].interview = interview;
       })
       .addCase(deleteAppointment.rejected, (state, action) => {
         console.log('deleteAppointment rejected...');
@@ -78,7 +75,7 @@ export default appointmentsSlice.reducer;
 
 // **REMINDER**: Refactor with params (state, appointmentIds)
 export const selectAppointmentsByDay = (state) => {
-  const allAppointments = state.appointments.appointmentsList;
+  const allAppointments = state.appointments;
   const selectedAppointments = [];
   const daysList = state.days.daysList;
   const selectedDay = state.days.selectedDay;

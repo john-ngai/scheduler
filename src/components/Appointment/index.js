@@ -44,7 +44,7 @@ const CONFIRM = 'CONFIRM';
 export default function Appointment(props) {
   const dispatch = useDispatch();
   const selectedDay = useSelector((state) => state.days.selectedDay);
-  const allAppointments = useSelector((state) => state.appointments.appointmentsList);
+  const allAppointments = useSelector((state) => state.appointments);
   const appointmentId = props.id;
 
   const { mode, transition, back } = useVisualMode(
