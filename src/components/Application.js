@@ -69,7 +69,9 @@ export default function Application() {
       </section>
       <section className="schedule">
         {schedule}
-        {isStateLoaded(state) ? <Appointment key="last" time="5pm" /> : null}
+        {isStateLoaded(state) ? (
+          <Appointment key="last" id="last" time="5pm" />
+        ) : null}
       </section>
     </main>
   );
