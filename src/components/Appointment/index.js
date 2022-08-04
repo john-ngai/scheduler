@@ -51,11 +51,9 @@ export default function Appointment(props) {
     };
 
     dispatch(deleteAppointment({ payload: appointment }));
-    transition(DELETING, true);
     // Temporary implementation - START
     setTimeout(() => {
       dispatch(spotsIncremented({ selectedDay }));
-      transition(EMPTY);
     }, 2000); /** */
     // Temporary implementation - END
   };
@@ -74,7 +72,6 @@ export default function Appointment(props) {
               dispatch(
                 updateVisualMode({ id: appointmentId, visualMode: 'CREATE' })
               );
-              transition(CREATE);
             }}
           />
         );
@@ -84,8 +81,8 @@ export default function Appointment(props) {
           <Show
             student={props.interview.student}
             interviewer={props.interview.interviewer.name}
-            onEdit={() => transition(UPDATE)}
-            onDestroy={() => transition(CONFIRM)}
+            // onEdit={() => transition(UPDATE)}
+            // onDestroy={() => transition(CONFIRM)}
           />
         );
         break;
@@ -94,7 +91,7 @@ export default function Appointment(props) {
           <Form
             interviewers={props.interviewers}
             onSave={save}
-            onCancel={back}
+            // onCancel={back}
           />
         );
         break;
@@ -105,7 +102,7 @@ export default function Appointment(props) {
             student={props.interview.student}
             interviewer={props.interview.interviewer.id}
             onSave={save}
-            onCancel={back}
+            // onCancel={back}
           />
         );
         break;
@@ -115,7 +112,7 @@ export default function Appointment(props) {
       case 'ERROR_SAVE':
         content = (
           <Error
-            onClose={back}
+            // onClose={back}
             message="Could not save appointment. Please try again later."
           />
         );
@@ -124,7 +121,7 @@ export default function Appointment(props) {
         content = (
           <Confirm
             message="Are you sure you would like to cancel?"
-            onCancel={back}
+            // onCancel={back}
             onConfirm={destroy}
           />
         );
@@ -135,7 +132,7 @@ export default function Appointment(props) {
       case 'ERROR_DELETE':
         content = (
           <Error
-            onClose={back}
+            // onClose={back}
             message="Could not cancel appointment. Please try again later."
           />
         );
