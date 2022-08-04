@@ -9,41 +9,21 @@ import Form from 'components/Appointment/Form';
 import Status from 'components/Appointment/Status';
 import Confirm from 'components/Appointment/Confirm';
 import Error from 'components/Appointment/Error';
-// Hook
-import useVisualMode from 'hooks/useVisualMode';
 // Redux
-import { addAppointment, deleteAppointment, updateVisualMode } from '../../app/appointmentsSlice';
+import {
+  addAppointment,
+  deleteAppointment,
+  updateVisualMode,
+} from '../../app/appointmentsSlice';
 import { spotsIncremented, spotsDecremented } from '../../app/daysSlice';
 // Stylesheet
 import 'components/Appointment/styles.scss';
-
-// Displays the add symbol for an empty/available timeslot.
-const EMPTY = 'EMPTY';
-// Displays the appoint details (student & interviewer).
-const SHOW = 'SHOW';
-// Displays a form to create an existing appointment.
-const CREATE = 'CREATE';
-// Displays a form to edit an appointment with the
-// existing data already filled as placeholders.
-const UPDATE = 'UPDATE';
-// Temporarily displays an animated status message.
-const SAVING = 'SAVING';
-const DELETING = 'DELETING';
-// Displays an appropriate error message and button to close it.
-const ERROR_SAVE = 'ERROR_SAVE';
-const ERROR_DELETE = 'ERROR_DELETE';
-// Displays a confirm page with an option to proceed or cancel.
-const CONFIRM = 'CONFIRM';
 
 export default function Appointment(props) {
   const dispatch = useDispatch();
   const selectedDay = useSelector((state) => state.days.selectedDay);
   const allAppointments = useSelector((state) => state.appointments);
   const appointmentId = props.id;
-
-  const { mode, transition, back } = useVisualMode(
-    props.interview ? SHOW : EMPTY
-  );
 
   // Create and book a new appointment.
   const save = (name, interviewer) => {
@@ -57,10 +37,8 @@ export default function Appointment(props) {
     dispatch(addAppointment({ payload: appointment }));
 
     // Temporary implementation - START
-    transition(SAVING);
     setTimeout(() => {
       dispatch(spotsDecremented({ selectedDay }));
-      transition(SHOW);
     }, 2000); /** */
     // Temporary implementation - END
   };
@@ -82,63 +60,96 @@ export default function Appointment(props) {
     // Temporary implementation - END
   };
 
+  /* --------- State visual mode implementation - START --------- */
+  const appointment = allAppointments[appointmentId];
+
+  let content = null;
+  if (appointmentId !== 'last') {
+    const visualMode = appointment.visualMode;
+    switch (visualMode) {
+      case 'EMPTY':
+        content = (
+          <Empty
+            onAdd={() => {
+              dispatch(
+                updateVisualMode({ id: appointmentId, visualMode: 'CREATE' })
+              );
+              transition(CREATE);
+            }}
+          />
+        );
+        break;
+      case 'SHOW':
+        content = (
+          <Show
+            student={props.interview.student}
+            interviewer={props.interview.interviewer.name}
+            onEdit={() => transition(UPDATE)}
+            onDestroy={() => transition(CONFIRM)}
+          />
+        );
+        break;
+      case 'CREATE':
+        content = (
+          <Form
+            interviewers={props.interviewers}
+            onSave={save}
+            onCancel={back}
+          />
+        );
+        break;
+      case 'UPDATE':
+        content = (
+          <Form
+            interviewers={props.interviewers}
+            student={props.interview.student}
+            interviewer={props.interview.interviewer.id}
+            onSave={save}
+            onCancel={back}
+          />
+        );
+        break;
+      case 'SAVING':
+        content = <Status message="Saving" />;
+        break;
+      case 'ERROR_SAVE':
+        content = (
+          <Error
+            onClose={back}
+            message="Could not save appointment. Please try again later."
+          />
+        );
+        break;
+      case 'CONFIRM':
+        content = (
+          <Confirm
+            message="Are you sure you would like to cancel?"
+            onCancel={back}
+            onConfirm={destroy}
+          />
+        );
+        break;
+      case 'DELETING':
+        content = <Status message="Deleting" />;
+        break;
+      case 'ERROR_DELETE':
+        content = (
+          <Error
+            onClose={back}
+            message="Could not cancel appointment. Please try again later."
+          />
+        );
+        break;
+      default:
+    }
+  }
+
+  /* --------- State visual mode implementation - END --------- */
+
   return (
     <article className="appointment">
       <Header time={props.time} />
-
-      {mode === EMPTY && <Empty onAdd={() => {
-        dispatch(updateVisualMode({ id: appointmentId, visualMode: 'CREATE' }))
-        transition(CREATE);
-        }} />}
-
-      {mode === SHOW && (
-        <Show
-          student={props.interview.student}
-          interviewer={props.interview.interviewer.name}
-          onEdit={() => transition(UPDATE)}
-          onDestroy={() => transition(CONFIRM)}
-        />
-      )}
-
-      {mode === CREATE && (
-        <Form interviewers={props.interviewers} onSave={save} onCancel={back} />
-      )}
-
-      {mode === UPDATE && (
-        <Form
-          interviewers={props.interviewers}
-          student={props.interview.student}
-          interviewer={props.interview.interviewer.id}
-          onSave={save}
-          onCancel={back}
-        />
-      )}
-
-      {mode === SAVING && <Status message="Saving" />}
-
-      {mode === ERROR_SAVE && (
-        <Error
-          onClose={back}
-          message="Could not save appointment. Please try again later."
-        />
-      )}
-
-      {mode === CONFIRM && (
-        <Confirm
-          message="Are you sure you would like to cancel?"
-          onCancel={back}
-          onConfirm={destroy}
-        />
-      )}
-
-      {mode === DELETING && <Status message="Deleting" />}
-
-      {mode === ERROR_DELETE && (
-        <Error
-          onClose={back}
-          message="Could not cancel appointment. Please try again later."
-        />
-      )}
+      {content}
     </article>
   );
 }
