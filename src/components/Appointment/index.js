@@ -117,7 +117,7 @@ export default function Appointment(props) {
           <Error
             onClose={() => {
               dispatch(
-                updateVisualMode({ id: appointmentId, visualMode: 'SHOW' })
+                updateVisualMode({ id: appointmentId, visualMode: 'EMPTY' })
               );
             }}
             message="Could not save appointment. Please try again later."
