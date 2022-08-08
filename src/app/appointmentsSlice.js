@@ -23,20 +23,20 @@ export const fetchAppointments = createAsyncThunk(
 export const addAppointment = createAsyncThunk(
   'appointments/addAppointment',
   async (action) => {
-    const appointment = action.payload;
+    const { appointment } = action.payload;
     const { id } = appointment;
     await axios.put(`/api/appointments/${id}`, appointment);
-    return appointment;
+    return action.payload; // { appointment, selectedDay }
   }
 );
 
 export const deleteAppointment = createAsyncThunk(
   'appointments/deleteAppointment',
   async (action) => {
-    const appointment = action.payload;
+    const { appointment } = action.payload;
     const { id } = appointment;
     await axios.delete(`/api/appointments/${id}`);
-    return appointment;
+    return action.payload; // { appointment, selectedDay }
   }
 );
 
@@ -55,33 +55,33 @@ const appointmentsSlice = createSlice({
         return action.payload;
       })
       .addCase(addAppointment.pending, (state, action) => {
-        const appointment = action.meta.arg.payload;
+        const { appointment } = action.meta.arg.payload;
         const { id } = appointment;
         state[id].visualMode = 'SAVING';
       })
       .addCase(addAppointment.fulfilled, (state, action) => {
-        const appointment = action.payload;
+        const { appointment } = action.payload;
         const { id, interview } = appointment;
         state[id] = { ...appointment, interview, visualMode: 'SHOW' };
       })
       .addCase(addAppointment.rejected, (state, action) => {
-        const appointment = action.meta.arg.payload;
+        const { appointment } = action.meta.arg.payload;
         const { id } = appointment;
         state[id].visualMode = 'ERROR_SAVE';
       })
       .addCase(deleteAppointment.pending, (state, action) => {
-        const appointment = action.meta.arg.payload;
+        const { appointment } = action.meta.arg.payload;
         const { id } = appointment;
         state[id].visualMode = 'DELETING';
       })
       .addCase(deleteAppointment.fulfilled, (state, action) => {
-        const appointment = action.payload;
+        const { appointment } = action.payload;
         const { id, interview } = appointment;
         state[id] = { ...appointment, interview, visualMode: 'EMPTY' };
       })
       .addCase(deleteAppointment.rejected, (state, action) => {
-        const appointment = action.meta.arg.payload;
-        const { id } = appointment
+        const { appointment } = action.meta.arg.payload;
+        const { id } = appointment;
         state[id].visualMode = 'ERROR_DELETE';
       });
   },
