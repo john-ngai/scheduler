@@ -1,5 +1,6 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { addAppointment } from './appointmentsSlice';
 
 export const fetchDays = createAsyncThunk('days/fetchDays', async () => {
   const response = await axios.get('/api/days');
@@ -33,9 +34,18 @@ const daysSlice = createSlice({
     },
   },
   extraReducers(builder) {
-    builder.addCase(fetchDays.fulfilled, (state, action) => {
-      return { ...state, daysList: action.payload };
-    });
+    builder
+      .addCase(fetchDays.fulfilled, (state, action) => {
+        return { ...state, daysList: action.payload };
+      })
+      .addCase(addAppointment.fulfilled, (state, action) => {
+        const { selectedDay } = action.payload;
+        const dayListItem = state.daysList.find(
+          (day) => day.name === selectedDay
+          );
+        // Decrement the spots value for the matching day upon successfully adding an appointment.
+        dayListItem.spots--;
+      });
   },
 });
 
