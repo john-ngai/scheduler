@@ -22,15 +22,20 @@ import 'components/Application.scss';
 export default function Application() {
   const dispatch = useDispatch();
 
+  // Dispatch thunks to fetch the API data & set the intial state.
   useEffect(() => {
     dispatch(fetchDays());
     dispatch(fetchAppointments());
     dispatch(fetchInterviewers());
   }, [dispatch]);
-
-  const state = useSelector((state) => state);
+  
+  // Initial value before fetching the API data.
   let schedule = null;
+  
+  const state = useSelector((state) => state);
 
+  // Proceed only when the entire initial state has been loaded
+  // (i.e., days, appointments, interviewers)
   if (isStateLoaded(state)) {
     const appointments = selectAppointmentsByDay(state);
     schedule = appointments.map((appointment) => {
