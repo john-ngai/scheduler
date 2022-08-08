@@ -18,20 +18,6 @@ const daysSlice = createSlice({
       const { selectedDay } = action.payload;
       state.selectedDay = selectedDay;
     },
-    spotsIncremented(state, action) {
-      const { selectedDay } = action.payload;
-      const dayListItem = state.daysList.find(
-        (day) => day.name === selectedDay
-      );
-      dayListItem.spots++;
-    },
-    spotsDecremented(state, action) {
-      const { selectedDay } = action.payload;
-      const dayListItem = state.daysList.find(
-        (day) => day.name === selectedDay
-      );
-      dayListItem.spots--;
-    },
   },
   extraReducers(builder) {
     builder
@@ -42,7 +28,7 @@ const daysSlice = createSlice({
         const { selectedDay } = action.payload;
         const dayListItem = state.daysList.find(
           (day) => day.name === selectedDay
-          );
+        );
         // Decrement the spots value for the matching day upon successfully adding an appointment.
         dayListItem.spots--;
       });
