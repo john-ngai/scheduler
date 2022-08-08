@@ -6,28 +6,15 @@ import { daySelected } from '../app/daysSlice';
 export default function DayList() {
   const dispatch = useDispatch();
 
-  const reduxState = useSelector((state) => state);
-  const reduxDays = reduxState.days.daysList;
-  /** reduxDays =
-   * [
-   *   {
-   *     id: Number,
-   *     name: String,
-   *     appointments: Array,
-   *     interviewers: Array,
-   *     spots: Number
-   *   },
-   *   {…}, {…}, {…}, {…}
-   * ]
-   */
-  const reduxDay = reduxState.days.selectedDay;
+  const daysList = useSelector((state) => state.days.daysList);
+  const selectedDay = useSelector((state) => state.days.selectedDay);
 
-  const listItems = reduxDays.map((day) => (
+  const listItems = daysList.map((day) => (
     <DayListItem
       key={day.id}
       name={day.name}
       spots={day.spots}
-      selected={day.name === reduxDay}
+      selected={day.name === selectedDay}
       setDay={() => dispatch(daySelected({ selectedDay: day.name }))}
     />
   ));
