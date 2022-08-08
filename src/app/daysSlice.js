@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { addAppointment } from './appointmentsSlice';
+import { addAppointment, deleteAppointment } from './appointmentsSlice';
 
 export const fetchDays = createAsyncThunk('days/fetchDays', async () => {
   const response = await axios.get('/api/days');
@@ -31,6 +31,14 @@ const daysSlice = createSlice({
         );
         // Decrement the spots value for the matching day upon successfully adding an appointment.
         dayListItem.spots--;
+      })
+      .addCase(deleteAppointment.fulfilled, (state, action) => {
+        const { selectedDay } = action.payload;
+        const dayListItem = state.daysList.find(
+          (day) => day.name === selectedDay
+        );
+        // Increment the spots value for the matching day upon successfully removing an appointment.
+        dayListItem.spots++;
       });
   },
 });
