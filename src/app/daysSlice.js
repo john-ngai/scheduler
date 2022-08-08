@@ -1,5 +1,6 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { addAppointment, deleteAppointment } from './appointmentsSlice';
 
 export const fetchDays = createAsyncThunk('days/fetchDays', async () => {
   const response = await axios.get('/api/days');
@@ -17,25 +18,28 @@ const daysSlice = createSlice({
       const { selectedDay } = action.payload;
       state.selectedDay = selectedDay;
     },
-    spotsIncremented(state, action) {
-      const { selectedDay } = action.payload;
-      const dayListItem = state.daysList.find(
-        (day) => day.name === selectedDay
-      );
-      dayListItem.spots++;
-    },
-    spotsDecremented(state, action) {
-      const { selectedDay } = action.payload;
-      const dayListItem = state.daysList.find(
-        (day) => day.name === selectedDay
-      );
-      dayListItem.spots--;
-    },
   },
   extraReducers(builder) {
-    builder.addCase(fetchDays.fulfilled, (state, action) => {
-      return { ...state, daysList: action.payload };
-    });
+    builder
+      .addCase(fetchDays.fulfilled, (state, action) => {
+        return { ...state, daysList: action.payload };
+      })
+      .addCase(addAppointment.fulfilled, (state, action) => {
+        const { selectedDay } = action.payload;
+        const dayListItem = state.daysList.find(
+          (day) => day.name === selectedDay
+        );
+        // Decrement the spots value for the matching day upon successfully adding an appointment.
+        dayListItem.spots--;
+      })
+      .addCase(deleteAppointment.fulfilled, (state, action) => {
+        const { selectedDay } = action.payload;
+        const dayListItem = state.daysList.find(
+          (day) => day.name === selectedDay
+        );
+        // Increment the spots value for the matching day upon successfully removing an appointment.
+        dayListItem.spots++;
+      });
   },
 });
 

@@ -40,7 +40,10 @@ export default function Application() {
           id={appointment.id}
           time={appointment.time}
           interview={formatInterview(state, appointment.interview)}
-          interviewers={selectInterviewersByDay(state, selectInterviewerIdsByDay(state))}
+          interviewers={selectInterviewersByDay(
+            state,
+            selectInterviewerIdsByDay(state)
+          )}
         />
       );
     });
@@ -66,7 +69,9 @@ export default function Application() {
       </section>
       <section className="schedule">
         {schedule}
-        <Appointment key="last" time="5pm" />
+        {isStateLoaded(state) ? (
+          <Appointment key="last" id="last" time="5pm" />
+        ) : null}
       </section>
     </main>
   );

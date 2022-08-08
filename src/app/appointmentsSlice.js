@@ -5,68 +5,92 @@ export const fetchAppointments = createAsyncThunk(
   'appointments/fetchAppointments',
   async () => {
     const response = await axios.get('/api/appointments');
-    return response.data;
+    const appointments = response.data;
+
+    // Add a conditional 'visualMode' property to each appointment object.
+    for (const id in appointments) {
+      if (appointments[id].interview) {
+        appointments[id].visualMode = 'SHOW';
+      } else {
+        appointments[id].visualMode = 'EMPTY';
+      }
+    }
+
+    return appointments;
   }
 );
 
 export const addAppointment = createAsyncThunk(
   'appointments/addAppointment',
   async (action) => {
-    const appointment = action.payload;
-    const id = appointment.id;
+    const { appointment } = action.payload;
+    const { id } = appointment;
     await axios.put(`/api/appointments/${id}`, appointment);
-    return appointment;
+    return action.payload; // { appointment, selectedDay }
   }
 );
 
 export const deleteAppointment = createAsyncThunk(
   'appointments/deleteAppointment',
   async (action) => {
-    const { id } = action.payload;
+    const { appointment } = action.payload;
+    const { id } = appointment;
     await axios.delete(`/api/appointments/${id}`);
-    return action.payload;
+    return action.payload; // { appointment, selectedDay }
   }
 );
 
 const appointmentsSlice = createSlice({
   name: 'appointments',
   initialState: {},
-  reducers: {},
+  reducers: {
+    updateVisualMode(state, action) {
+      const { id, visualMode } = action.payload;
+      state[id].visualMode = visualMode;
+    },
+  },
   extraReducers(builder) {
     builder
       .addCase(fetchAppointments.fulfilled, (state, action) => {
         return action.payload;
       })
-      .addCase(addAppointment.pending, () => {
-        console.log('addAppointment pending...');
+      .addCase(addAppointment.pending, (state, action) => {
+        const { appointment } = action.meta.arg.payload;
+        const { id } = appointment;
+        state[id].visualMode = 'SAVING';
       })
       .addCase(addAppointment.fulfilled, (state, action) => {
-        console.log('addAppointment fulfilled...');
-        const { id, interview } = action.payload;
-        state[id].interview = interview;
+        const { appointment } = action.payload;
+        const { id, interview } = appointment;
+        state[id] = { ...appointment, interview, visualMode: 'SHOW' };
       })
-      .addCase(addAppointment.rejected, () => {
-        console.log('addAppointment rejected...');
+      .addCase(addAppointment.rejected, (state, action) => {
+        const { appointment } = action.meta.arg.payload;
+        const { id } = appointment;
+        state[id].visualMode = 'ERROR_SAVE';
       })
-      .addCase(deleteAppointment.pending, () => {
-        console.log('deleteAppointment pending...');
+      .addCase(deleteAppointment.pending, (state, action) => {
+        const { appointment } = action.meta.arg.payload;
+        const { id } = appointment;
+        state[id].visualMode = 'DELETING';
       })
       .addCase(deleteAppointment.fulfilled, (state, action) => {
-        console.log('deleteAppointment fulfilled...');
-        const { id, interview } = action.payload;
-        state[id].interview = interview;
+        const { appointment } = action.payload;
+        const { id, interview } = appointment;
+        state[id] = { ...appointment, interview, visualMode: 'EMPTY' };
       })
-      .addCase(deleteAppointment.rejected, () => {
-        console.log('deleteAppointment rejected...');
+      .addCase(deleteAppointment.rejected, (state, action) => {
+        const { appointment } = action.meta.arg.payload;
+        const { id } = appointment;
+        state[id].visualMode = 'ERROR_DELETE';
       });
   },
 });
 
-export const { interviewAdded } = appointmentsSlice.actions;
+export const { updateVisualMode } = appointmentsSlice.actions;
 
 export default appointmentsSlice.reducer;
 
-// **REMINDER**: Refactor with params (state, appointmentIds)
 export const selectAppointmentsByDay = (state) => {
   const allAppointments = state.appointments;
   const selectedAppointments = [];
