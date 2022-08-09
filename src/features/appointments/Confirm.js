@@ -1,5 +1,5 @@
 import React from 'react';
-import Button from 'components/Button.js';
+import Button from '../../components/Button';
 
 // Confirm or cancel an action (edit or delete) from the Form component.
 export default function (props) {

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Button from 'components/Button';
+import Button from '../../components/Button';
 import InterviewerList from 'components/InterviewerList';
 
 // Display to book or edit an existing appointment.
