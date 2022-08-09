@@ -1,5 +1,6 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { selectAllDays } from '../days/daysSlice';
 
 export const fetchAppointments = createAsyncThunk(
   'appointments/fetchAppointments',
@@ -94,16 +95,16 @@ export default appointmentsSlice.reducer;
 export const selectAppointmentsBySelectedDay = (state) => {
   const allAppointments = state.appointments;
   const selectedAppointments = [];
-  const daysList = state.days.daysList;
+  const allDays = selectAllDays(state);
   const selectedDay = state.days.selectedDay;
 
-  // If the daysList array is empty, return the empty selectedAppointments array.
-  if (daysList.length === 0) {
+  // If the allDays array is empty, return the empty selectedAppointments array.
+  if (allDays.length === 0) {
     return selectedAppointments;
   }
 
-  if (daysList.length > 0) {
-    daysList.forEach((day) => {
+  if (allDays.length > 0) {
+    allDays.forEach((day) => {
       if (day.name === selectedDay) {
         // Store the array of appointment ids for the selected day.
         const appointmentIds = day.appointments;
