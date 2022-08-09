@@ -1,25 +1,28 @@
 // Packages
 import React, { useEffect } from 'react';
 // Components
-import DayList from '../features/days/DayList';
-import Appointment from '../features/appointments/Appointment';
+import DayList from './features/days/DayList';
+import Appointment from './features/appointments/Appointment';
 // Redux
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchDays, selectInterviewerIdsBySelectedDay } from '../features/days/daysSlice';
+import {
+  fetchDays,
+  selectInterviewerIdsBySelectedDay,
+} from './features/days/daysSlice';
 import {
   fetchAppointments,
   selectAppointmentsBySelectedDay,
-} from '../features/appointments/appointmentsSlice';
+} from './features/appointments/appointmentsSlice';
 import {
   fetchInterviewers,
   selectInterviewersByDay,
-} from '../features/interviewers/interviewersSlice';
+} from './features/interviewers/interviewersSlice';
 // Helper functions
-import { isStateLoaded, formatInterview } from '../helpers';
+import { isStateLoaded, formatInterview } from './helpers';
 // Stylesheet
-import 'components/Application.scss';
+import './App.scss';
 
-export default function Application() {
+export default function App() {
   const dispatch = useDispatch();
 
   // Dispatch thunks to fetch the API data & set the intial state.
@@ -28,10 +31,10 @@ export default function Application() {
     dispatch(fetchAppointments());
     dispatch(fetchInterviewers());
   }, [dispatch]);
-  
+
   // Initial value before fetching the API data.
   let schedule = null;
-  
+
   const state = useSelector((state) => state);
 
   // Proceed only when the entire initial state has been loaded
