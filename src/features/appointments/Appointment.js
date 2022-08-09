@@ -61,27 +61,20 @@ export default function Appointment(props) {
 
   if (id !== 'last') {
     const visualMode = appointments[id].visualMode;
+    const transition = (visualMode) => {
+      dispatch(updateVisualMode({ id, visualMode }));
+    };
     switch (visualMode) {
       case 'EMPTY':
-        content = (
-          <Empty
-            onAdd={() => {
-              dispatch(updateVisualMode({ id, visualMode: 'CREATE' }));
-            }}
-          />
-        );
+        content = <Empty onAdd={() => transition('CREATE')} />;
         break;
       case 'SHOW':
         content = (
           <Show
             student={props.interview.student}
             interviewer={props.interview.interviewer.name}
-            onEdit={() => {
-              dispatch(updateVisualMode({ id, visualMode: 'UPDATE' }));
-            }}
-            onDestroy={() => {
-              dispatch(updateVisualMode({ id, visualMode: 'CONFIRM' }));
-            }}
+            onEdit={() => transition('UPDATE')}
+            onDestroy={() => transition('CONFIRM')}
           />
         );
         break;
@@ -90,9 +83,7 @@ export default function Appointment(props) {
           <Form
             interviewers={props.interviewers}
             onSave={onSaveHandler}
-            onCancel={() => {
-              dispatch(updateVisualMode({ id, visualMode: 'EMPTY' }));
-            }}
+            onCancel={() => transition('EMPTY')}
           />
         );
         break;
@@ -103,9 +94,7 @@ export default function Appointment(props) {
             student={props.interview.student}
             interviewer={props.interview.interviewer.id}
             onSave={onSaveHandler}
-            onCancel={() => {
-              dispatch(updateVisualMode({ id, visualMode: 'SHOW' }));
-            }}
+            onCancel={() => transition('SHOW')}
           />
         );
         break;
@@ -115,9 +104,7 @@ export default function Appointment(props) {
       case 'ERROR_SAVE':
         content = (
           <Error
-            onClose={() => {
-              dispatch(updateVisualMode({ id, visualMode: 'EMPTY' }));
-            }}
+            onClose={() => transition('EMPTY')}
             message="Could not book appointment. Please try again later."
           />
         );
@@ -126,9 +113,7 @@ export default function Appointment(props) {
         content = (
           <Confirm
             message="Are you sure you would like to cancel?"
-            onCancel={() => {
-              dispatch(updateVisualMode({ id, visualMode: 'SHOW' }));
-            }}
+            onCancel={() => transition('SHOW')}
             onConfirm={onDestroyHandler}
           />
         );
@@ -139,9 +124,7 @@ export default function Appointment(props) {
       case 'ERROR_DELETE':
         content = (
           <Error
-            onClose={() => {
-              dispatch(updateVisualMode({ id, visualMode: 'SHOW' }));
-            }}
+            onClose={() => transition('SHOW')}
             message="Could not cancel appointment. Please try again later."
           />
         );
