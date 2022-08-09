@@ -57,7 +57,7 @@ export default function Appointment(props) {
     const newDayListItem = { ...dayListItem, spots };
     dispatch(deleteAppointment({ payload: { appointment, newDayListItem } }));
   };
-  
+
   let content = null;
 
   if (id !== 'last') {
