@@ -2,13 +2,13 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 // Components
-import Header from 'components/Appointment/Header';
-import Empty from 'components/Appointment/Empty';
-import Show from 'components/Appointment/Show';
-import Form from 'components/Appointment/Form';
-import Status from 'components/Appointment/Status';
-import Confirm from 'components/Appointment/Confirm';
-import Error from 'components/Appointment/Error';
+import Header from './Header';
+import Empty from './Empty';
+import Show from './Show';
+import Form from './Form';
+import Status from './Status';
+import Confirm from './Confirm';
+import Error from './Error';
 // Redux
 import {
   updateAppointment,
@@ -22,7 +22,7 @@ import {
 // Helpher function
 import { getSpotsRemaining } from '../../helpers';
 // Stylesheet
-import 'components/Appointment/styles.scss';
+import './styles.scss';
 
 export default function Appointment(props) {
   const dispatch = useDispatch();
