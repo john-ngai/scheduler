@@ -10,6 +10,7 @@ import Confirm from './Confirm';
 // Redux
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  selectAppointmentEntities,
   updateVisualMode,
   updateAppointment,
   deleteAppointment,
@@ -25,7 +26,7 @@ import './Appointment.scss';
 
 export default function Appointment(props) {
   const dispatch = useDispatch();
-  const appointments = useSelector((state) => state.appointments);
+  const appointments = useSelector((state) => selectAppointmentEntities(state));
   const dayListItem = useSelector(selectDayListItemBySelectedDay);
   const apppointmentIds = useSelector(selectAppointmentIdsBySelectedDay);
   const id = props.id;
