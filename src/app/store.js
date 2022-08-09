@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
-import daysReducer from './daysSlice';
+import daysReducer from '../features/days/daysSlice';
 import appointmentsReducer from '../features/appointments/appointmentsSlice';
 import interviewersReducer from './interviewersSlice';
 

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { updateAppointment, deleteAppointment } from '../features/appointments/appointmentsSlice';
+import { updateAppointment, deleteAppointment } from '../appointments/appointmentsSlice';
 
 export const fetchDays = createAsyncThunk('days/fetchDays', async () => {
   const response = await axios.get('/api/days');

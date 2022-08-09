@@ -5,7 +5,7 @@ import DayList from '../features/days/DayList';
 import Appointment from '../features/appointments/Appointment';
 // Redux
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchDays, selectInterviewerIdsBySelectedDay } from '../app/daysSlice';
+import { fetchDays, selectInterviewerIdsBySelectedDay } from '../features/days/daysSlice';
 import {
   fetchAppointments,
   selectAppointmentsBySelectedDay,

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import DayListItem from './DayListItem';
-import { daySelected } from '../../app/daysSlice';
+import { daySelected } from '../../features/days/daysSlice';
 
 export default function DayList() {
   const dispatch = useDispatch();

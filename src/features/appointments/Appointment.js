@@ -18,7 +18,7 @@ import {
 import {
   selectDayListItemBySelectedDay,
   selectAppointmentIdsBySelectedDay,
-} from '../../app/daysSlice';
+} from '../../features/days/daysSlice';
 // Helpher function
 import { getSpotsRemaining } from '../../helpers';
 // Stylesheet
