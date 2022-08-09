@@ -1,7 +1,7 @@
 // Packages
 import React, { useEffect } from 'react';
 // Components
-import DayList from 'components/DayList.js';
+import DayList from '../features/days/DayList';
 import Appointment from '../features/appointments/Appointment';
 // Redux
 import { useDispatch, useSelector } from 'react-redux';

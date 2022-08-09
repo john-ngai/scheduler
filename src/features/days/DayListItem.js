@@ -1,6 +1,6 @@
 import React from "react";
 import classNames from 'classnames';
-import "components/DayListItem.scss";
+import "./DayListItem.scss";
 
 // Describes the number of interview slots remaining for a given day.
 export default function DayListItem(props) {
