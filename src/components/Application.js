@@ -38,7 +38,6 @@ export default function Application() {
   // (i.e., days, appointments, interviewers)
   if (isStateLoaded(state)) {
     const appointments = selectAppointmentsBySelectedDay(state);
-    console.log(appointments);
     schedule = appointments.map((appointment) => {
       return (
         <Appointment
