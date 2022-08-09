@@ -17,7 +17,7 @@ import {
 } from '../../app/appointmentsSlice';
 import {
   selectDayListItemBySelectedDay,
-  selectAppointmentIdsByDay,
+  selectAppointmentIdsBySelectedDay,
 } from '../../app/daysSlice';
 // Helpher function
 import { getSpotsRemaining } from '../../helpers';
@@ -28,7 +28,7 @@ export default function Appointment(props) {
   const dispatch = useDispatch();
   const dayListItem = useSelector(selectDayListItemBySelectedDay);
   const appointments = useSelector((state) => state.appointments);
-  const apppointmentIds = useSelector(selectAppointmentIdsByDay);
+  const apppointmentIds = useSelector(selectAppointmentIdsBySelectedDay);
   const id = props.id;
 
   // Save a new appointment or update an existing one.
