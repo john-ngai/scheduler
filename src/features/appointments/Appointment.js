@@ -1,33 +1,32 @@
-// Packages
+// React
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-// Components
 import Header from './Header';
 import Empty from './Empty';
 import Show from './Show';
 import Form from './Form';
 import Status from './Status';
-import Confirm from './Confirm';
 import Error from './Error';
+import Confirm from './Confirm';
 // Redux
+import { useDispatch, useSelector } from 'react-redux';
 import {
+  updateVisualMode,
   updateAppointment,
   deleteAppointment,
-  updateVisualMode,
 } from '../../features/appointments/appointmentsSlice';
 import {
   selectDayListItemBySelectedDay,
   selectAppointmentIdsBySelectedDay,
 } from '../../features/days/daysSlice';
-// Helpher function
+// Helper function
 import { getSpotsRemaining } from '../../helpers/helpers';
 // Stylesheet
 import './Appointment.scss';
 
 export default function Appointment(props) {
   const dispatch = useDispatch();
-  const dayListItem = useSelector(selectDayListItemBySelectedDay);
   const appointments = useSelector((state) => state.appointments);
+  const dayListItem = useSelector(selectDayListItemBySelectedDay);
   const apppointmentIds = useSelector(selectAppointmentIdsBySelectedDay);
   const id = props.id;
 
