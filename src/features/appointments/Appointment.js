@@ -22,7 +22,7 @@ import {
 // Helpher function
 import { getSpotsRemaining } from '../../helpers';
 // Stylesheet
-import './styles.scss';
+import './Appointment.scss';
 
 export default function Appointment(props) {
   const dispatch = useDispatch();
