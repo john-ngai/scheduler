@@ -25,20 +25,16 @@ const daysSlice = createSlice({
         return { ...state, daysList: action.payload };
       })
       .addCase(addAppointment.fulfilled, (state, action) => {
-        const { selectedDay } = action.payload;
-        const dayListItem = state.daysList.find(
-          (day) => day.name === selectedDay
-        );
-        // Decrement the spots value for the matching day upon successfully adding an appointment.
-        dayListItem.spots--;
+        const { newDayListItem } = action.payload;
+        const { id, spots } = newDayListItem;
+        const oldDayListItem = state.daysList.find(day => day.id === id);
+        oldDayListItem.spots = spots;
       })
       .addCase(deleteAppointment.fulfilled, (state, action) => {
-        const { selectedDay } = action.payload;
-        const dayListItem = state.daysList.find(
-          (day) => day.name === selectedDay
-        );
-        // Increment the spots value for the matching day upon successfully removing an appointment.
-        dayListItem.spots++;
+        const { newDayListItem } = action.payload;
+        const { id, spots } = newDayListItem;
+        const oldDayListItem = state.daysList.find(day => day.id === id);
+        oldDayListItem.spots = spots;
       });
   },
 });
@@ -47,6 +43,13 @@ export const { daySelected, spotsIncremented, spotsDecremented } =
   daysSlice.actions;
 
 export default daysSlice.reducer;
+
+export const selectDayListItemBySelectedDay = (state) => {
+  const daysList = state.days.daysList;
+  const selectedDay = state.days.selectedDay;
+  const dayListItem = daysList.find(day => day.name === selectedDay);
+  return dayListItem;
+}
 
 export const selectAppointmentIdsByDay = (state) => {
   const daysList = state.days.daysList;

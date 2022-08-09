@@ -15,50 +15,59 @@ import {
   deleteAppointment,
   updateVisualMode,
 } from '../../app/appointmentsSlice';
+import {
+  selectDayListItemBySelectedDay,
+  selectAppointmentIdsByDay,
+} from '../../app/daysSlice';
+// Helpher function
+import { getSpotsRemaining } from '../../helpers';
 // Stylesheet
 import 'components/Appointment/styles.scss';
 
 export default function Appointment(props) {
   const dispatch = useDispatch();
-  const selectedDay = useSelector((state) => state.days.selectedDay);
-  const allAppointments = useSelector((state) => state.appointments);
-  const appointmentId = props.id;
+  const dayListItem = useSelector(selectDayListItemBySelectedDay);
+  const appointments = useSelector((state) => state.appointments);
+  const apppointmentIds = useSelector(selectAppointmentIdsByDay);
+  const id = props.id;
 
-  // Create and book a new appointment.
-  const save = (name, interviewer) => {
+  // Save a new appointment or update an existing one.
+  const onSaveHandler = (name, interviewer) => {
     const appointment = {
-      ...allAppointments[appointmentId],
+      ...appointments[id],
       interview: {
         student: name,
         interviewer,
       },
     };
-    dispatch(addAppointment({ payload: { appointment, selectedDay } }));
+    const newAppointments = { ...appointments, [id]: { ...appointment } };
+    const spots = getSpotsRemaining(newAppointments, apppointmentIds);
+    const newDayListItem = { ...dayListItem, spots };
+    dispatch(addAppointment({ payload: { appointment, newDayListItem } }));
   };
 
-  // Cancel a booked appointment.
-  const destroy = () => {
+  // Destroy an existing appointment.
+  const onDestroyHandler = () => {
     const appointment = {
-      ...allAppointments[appointmentId],
+      ...appointments[id],
       interview: null,
     };
-
-    dispatch(deleteAppointment({ payload: { appointment, selectedDay } }));
+    const newAppointments = { ...appointments, [id]: { ...appointment } };
+    const spots = getSpotsRemaining(newAppointments, apppointmentIds);
+    const newDayListItem = { ...dayListItem, spots };
+    dispatch(deleteAppointment({ payload: { appointment, newDayListItem } }));
   };
-
-  const appointment = allAppointments[appointmentId];
-
+  
   let content = null;
-  if (appointmentId !== 'last') {
-    const visualMode = appointment.visualMode;
+
+  if (id !== 'last') {
+    const visualMode = appointments[id].visualMode;
     switch (visualMode) {
       case 'EMPTY':
         content = (
           <Empty
             onAdd={() => {
-              dispatch(
-                updateVisualMode({ id: appointmentId, visualMode: 'CREATE' })
-              );
+              dispatch(updateVisualMode({ id, visualMode: 'CREATE' }));
             }}
           />
         );
@@ -69,14 +78,10 @@ export default function Appointment(props) {
             student={props.interview.student}
             interviewer={props.interview.interviewer.name}
             onEdit={() => {
-              dispatch(
-                updateVisualMode({ id: appointmentId, visualMode: 'UPDATE' })
-              );
+              dispatch(updateVisualMode({ id, visualMode: 'UPDATE' }));
             }}
             onDestroy={() => {
-              dispatch(
-                updateVisualMode({ id: appointmentId, visualMode: 'CONFIRM' })
-              );
+              dispatch(updateVisualMode({ id, visualMode: 'CONFIRM' }));
             }}
           />
         );
@@ -85,11 +90,9 @@ export default function Appointment(props) {
         content = (
           <Form
             interviewers={props.interviewers}
-            onSave={save}
+            onSave={onSaveHandler}
             onCancel={() => {
-              dispatch(
-                updateVisualMode({ id: appointmentId, visualMode: 'EMPTY' })
-              );
+              dispatch(updateVisualMode({ id, visualMode: 'EMPTY' }));
             }}
           />
         );
@@ -100,27 +103,23 @@ export default function Appointment(props) {
             interviewers={props.interviewers}
             student={props.interview.student}
             interviewer={props.interview.interviewer.id}
-            onSave={save}
+            onSave={onSaveHandler}
             onCancel={() => {
-              dispatch(
-                updateVisualMode({ id: appointmentId, visualMode: 'SHOW' })
-              );
+              dispatch(updateVisualMode({ id, visualMode: 'SHOW' }));
             }}
           />
         );
         break;
       case 'SAVING':
-        content = <Status message="Saving" />;
+        content = <Status message="Booking" />;
         break;
       case 'ERROR_SAVE':
         content = (
           <Error
             onClose={() => {
-              dispatch(
-                updateVisualMode({ id: appointmentId, visualMode: 'EMPTY' })
-              );
+              dispatch(updateVisualMode({ id, visualMode: 'EMPTY' }));
             }}
-            message="Could not save appointment. Please try again later."
+            message="Could not book appointment. Please try again later."
           />
         );
         break;
@@ -129,24 +128,20 @@ export default function Appointment(props) {
           <Confirm
             message="Are you sure you would like to cancel?"
             onCancel={() => {
-              dispatch(
-                updateVisualMode({ id: appointmentId, visualMode: 'SHOW' })
-              );
+              dispatch(updateVisualMode({ id, visualMode: 'SHOW' }));
             }}
-            onConfirm={destroy}
+            onConfirm={onDestroyHandler}
           />
         );
         break;
       case 'DELETING':
-        content = <Status message="Deleting" />;
+        content = <Status message="Canceling" />;
         break;
       case 'ERROR_DELETE':
         content = (
           <Error
             onClose={() => {
-              dispatch(
-                updateVisualMode({ id: appointmentId, visualMode: 'SHOW' })
-              );
+              dispatch(updateVisualMode({ id, visualMode: 'SHOW' }));
             }}
             message="Could not cancel appointment. Please try again later."
           />
