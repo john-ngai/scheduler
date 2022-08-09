@@ -13,7 +13,7 @@ import {
 import {
   fetchInterviewers,
   selectInterviewersByDay,
-} from '../app/interviewersSlice';
+} from '../features/interviewers/interviewersSlice';
 // Helper functions
 import { isStateLoaded, formatInterview } from '../helpers';
 // Stylesheet
