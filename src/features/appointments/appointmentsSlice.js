@@ -1,6 +1,12 @@
 import axios from 'axios';
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import {
+  createEntityAdapter,
+  createAsyncThunk,
+  createSlice,
+} from '@reduxjs/toolkit';
 import { selectAllDays } from '../days/daysSlice';
+
+const appointmentsAdapter = createEntityAdapter();
 
 export const fetchAppointments = createAsyncThunk(
   'appointments/fetchAppointments',
@@ -43,47 +49,54 @@ export const deleteAppointment = createAsyncThunk(
 
 const appointmentsSlice = createSlice({
   name: 'appointments',
-  initialState: {},
+  initialState: appointmentsAdapter.getInitialState(),
   reducers: {
     updateVisualMode(state, action) {
       const { id, visualMode } = action.payload;
-      state[id].visualMode = visualMode;
+      const update = { id, changes: { visualMode } };
+      appointmentsAdapter.updateOne(state, update);
     },
   },
   extraReducers(builder) {
     builder
       .addCase(fetchAppointments.fulfilled, (state, action) => {
-        return action.payload;
+        appointmentsAdapter.upsertMany(state, action.payload);
       })
       .addCase(updateAppointment.pending, (state, action) => {
         const { appointment } = action.meta.arg.payload;
         const { id } = appointment;
-        state[id].visualMode = 'SAVING';
+        const update = { id, changes: { visualMode: 'SAVING' } };
+        appointmentsAdapter.updateOne(state, update);
       })
       .addCase(updateAppointment.fulfilled, (state, action) => {
         const { appointment } = action.payload;
         const { id, interview } = appointment;
-        state[id] = { ...appointment, interview, visualMode: 'SHOW' };
+        const update = { id, changes: { interview, visualMode: 'SHOW' } };
+        appointmentsAdapter.updateOne(state, update);
       })
       .addCase(updateAppointment.rejected, (state, action) => {
         const { appointment } = action.meta.arg.payload;
         const { id } = appointment;
-        state[id].visualMode = 'ERROR_SAVE';
+        const update = { id, changes: { visualMode: 'ERROR_SAVE' } };
+        appointmentsAdapter.updateOne(state, update);
       })
       .addCase(deleteAppointment.pending, (state, action) => {
         const { appointment } = action.meta.arg.payload;
         const { id } = appointment;
-        state[id].visualMode = 'DELETING';
+        const update = { id, changes: { visualMode: 'DELETING' } };
+        appointmentsAdapter.updateOne(state, update);
       })
       .addCase(deleteAppointment.fulfilled, (state, action) => {
         const { appointment } = action.payload;
         const { id, interview } = appointment;
-        state[id] = { ...appointment, interview, visualMode: 'EMPTY' };
+        const update = { id, changes: { interview, visualMode: 'EMPTY' } };
+        appointmentsAdapter.updateOne(state, update);
       })
       .addCase(deleteAppointment.rejected, (state, action) => {
         const { appointment } = action.meta.arg.payload;
         const { id } = appointment;
-        state[id].visualMode = 'ERROR_DELETE';
+        const update = { id, changes: { visualMode: 'ERROR_DELETE' } };
+        appointmentsAdapter.updateOne(state, update);
       });
   },
 });
@@ -92,8 +105,24 @@ export const { updateVisualMode } = appointmentsSlice.actions;
 
 export default appointmentsSlice.reducer;
 
+/*
+  selectIds: returns the state.ids array.
+  selectEntities: returns the state.entities lookup table.
+  selectAll: maps over the state.ids array, and returns an array of entities in the same order.
+  selectTotal: returns the total number of entities being stored in this state.
+  selectById: given the state and an entity ID, returns the entity with that ID or undefined.
+*/
+
+// Customized selectors for the appointmentsAdapter.
+export const {
+  selectAll: selectAllAppointments, // Returns an array of all the entities.
+  selectById: selectAppointmentById, // Given (state, id), returns the entity with that id or undefined.
+  selectIds: selectAppointmentIds, // Returns an array of all the ids.
+  selectEntities: selectAppointmentEntities, // ** Used in appointmentsSlice.js & Appointment.js ** - Returns the state.entities lookup table.
+} = appointmentsAdapter.getSelectors((state) => state.appointments);
+
 export const selectAppointmentsBySelectedDay = (state) => {
-  const allAppointments = state.appointments;
+  const allAppointments = selectAppointmentEntities(state);
   const selectedAppointments = [];
   const allDays = selectAllDays(state);
   const selectedDay = state.days.selectedDay;
