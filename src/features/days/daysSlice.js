@@ -1,6 +1,9 @@
 import axios from 'axios';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { addAppointment, deleteAppointment } from './appointmentsSlice';
+import {
+  updateAppointment,
+  deleteAppointment,
+} from '../appointments/appointmentsSlice';
 
 export const fetchDays = createAsyncThunk('days/fetchDays', async () => {
   const response = await axios.get('/api/days');
@@ -24,21 +27,17 @@ const daysSlice = createSlice({
       .addCase(fetchDays.fulfilled, (state, action) => {
         return { ...state, daysList: action.payload };
       })
-      .addCase(addAppointment.fulfilled, (state, action) => {
-        const { selectedDay } = action.payload;
-        const dayListItem = state.daysList.find(
-          (day) => day.name === selectedDay
-        );
-        // Decrement the spots value for the matching day upon successfully adding an appointment.
-        dayListItem.spots--;
+      .addCase(updateAppointment.fulfilled, (state, action) => {
+        const { newDayListItem } = action.payload;
+        const { id, spots } = newDayListItem;
+        const oldDayListItem = state.daysList.find((day) => day.id === id);
+        oldDayListItem.spots = spots;
       })
       .addCase(deleteAppointment.fulfilled, (state, action) => {
-        const { selectedDay } = action.payload;
-        const dayListItem = state.daysList.find(
-          (day) => day.name === selectedDay
-        );
-        // Increment the spots value for the matching day upon successfully removing an appointment.
-        dayListItem.spots++;
+        const { newDayListItem } = action.payload;
+        const { id, spots } = newDayListItem;
+        const oldDayListItem = state.daysList.find((day) => day.id === id);
+        oldDayListItem.spots = spots;
       });
   },
 });
@@ -48,7 +47,14 @@ export const { daySelected, spotsIncremented, spotsDecremented } =
 
 export default daysSlice.reducer;
 
-export const selectAppointmentIdsByDay = (state) => {
+export const selectDayListItemBySelectedDay = (state) => {
+  const daysList = state.days.daysList;
+  const selectedDay = state.days.selectedDay;
+  const dayListItem = daysList.find((day) => day.name === selectedDay);
+  return dayListItem;
+};
+
+export const selectAppointmentIdsBySelectedDay = (state) => {
   const daysList = state.days.daysList;
   const selectedDay = state.days.selectedDay;
   const selectedDayList = daysList.find((day) => day.name === selectedDay);
@@ -56,7 +62,7 @@ export const selectAppointmentIdsByDay = (state) => {
   return appointmentIds;
 };
 
-export const selectInterviewerIdsByDay = (state) => {
+export const selectInterviewerIdsBySelectedDay = (state) => {
   const daysList = state.days.daysList;
   const selectedDay = state.days.selectedDay;
   const selectedDayList = daysList.find((day) => day.name === selectedDay);

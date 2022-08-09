@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import Button from 'components/Button';
-import InterviewerList from 'components/InterviewerList';
+import Button from '../../components/Button';
+import InterviewerList from '../../features/interviewers/InterviewerList';
 
 // Display to book or edit an existing appointment.
 export default function Form(props) {

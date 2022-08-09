@@ -1,38 +1,46 @@
 // Packages
 import React, { useEffect } from 'react';
 // Components
-import DayList from 'components/DayList.js';
-import Appointment from 'components/Appointment';
+import DayList from './features/days/DayList';
+import Appointment from './features/appointments/Appointment';
 // Redux
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchDays, selectInterviewerIdsByDay } from '../app/daysSlice';
+import {
+  fetchDays,
+  selectInterviewerIdsBySelectedDay,
+} from './features/days/daysSlice';
 import {
   fetchAppointments,
-  selectAppointmentsByDay,
-} from '../app/appointmentsSlice';
+  selectAppointmentsBySelectedDay,
+} from './features/appointments/appointmentsSlice';
 import {
   fetchInterviewers,
   selectInterviewersByDay,
-} from '../app/interviewersSlice';
+} from './features/interviewers/interviewersSlice';
 // Helper functions
-import { isStateLoaded, formatInterview } from '../helpers';
+import { isStateLoaded, formatInterview } from './helpers/helpers';
 // Stylesheet
-import 'components/Application.scss';
+import './App.scss';
 
-export default function Application() {
+export default function App() {
   const dispatch = useDispatch();
 
+  // Dispatch thunks to fetch the API data & set the intial state.
   useEffect(() => {
     dispatch(fetchDays());
     dispatch(fetchAppointments());
     dispatch(fetchInterviewers());
   }, [dispatch]);
 
-  const state = useSelector((state) => state);
+  // Initial value before fetching the API data.
   let schedule = null;
 
+  const state = useSelector((state) => state);
+
+  // Proceed only when the entire initial state has been loaded
+  // (i.e., days, appointments, interviewers)
   if (isStateLoaded(state)) {
-    const appointments = selectAppointmentsByDay(state);
+    const appointments = selectAppointmentsBySelectedDay(state);
     schedule = appointments.map((appointment) => {
       return (
         <Appointment
@@ -42,7 +50,7 @@ export default function Application() {
           interview={formatInterview(state, appointment.interview)}
           interviewers={selectInterviewersByDay(
             state,
-            selectInterviewerIdsByDay(state)
+            selectInterviewerIdsBySelectedDay(state)
           )}
         />
       );
