@@ -5,7 +5,7 @@ import DayList from 'components/DayList.js';
 import Appointment from 'components/Appointment';
 // Redux
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchDays, selectInterviewerIdsByDay } from '../app/daysSlice';
+import { fetchDays, selectInterviewerIdsBySelectedDay } from '../app/daysSlice';
 import {
   fetchAppointments,
   selectAppointmentsBySelectedDay,
@@ -47,7 +47,7 @@ export default function Application() {
           interview={formatInterview(state, appointment.interview)}
           interviewers={selectInterviewersByDay(
             state,
-            selectInterviewerIdsByDay(state)
+            selectInterviewerIdsBySelectedDay(state)
           )}
         />
       );
