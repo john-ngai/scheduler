@@ -35,3 +35,17 @@ export const formatInterview = (state, interview) => {
 
   return { ...interview, interviewer: interviewers[selectedInterviewerId] };
 };
+
+// Return the number of spots remaining for a given array of appointment ids.
+export const getSpotsRemaining = (newAppointments, appointmentIds) => {
+  let spotsRemaining = 0;
+
+  appointmentIds.forEach((id) => {
+    // Increment spotsRemaining when the interview property value is equal to null.
+    if (!newAppointments[id].interview) {
+      spotsRemaining++;
+    }
+  });
+
+  return spotsRemaining;
+};
