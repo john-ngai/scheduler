@@ -1,9 +1,15 @@
 import axios from 'axios';
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import {
+  createEntityAdapter,
+  createAsyncThunk,
+  createSlice,
+} from '@reduxjs/toolkit';
 import {
   updateAppointment,
   deleteAppointment,
 } from '../appointments/appointmentsSlice';
+
+const daysAdapter = createEntityAdapter();
 
 export const fetchDays = createAsyncThunk('days/fetchDays', async () => {
   const response = await axios.get('/api/days');
@@ -12,10 +18,9 @@ export const fetchDays = createAsyncThunk('days/fetchDays', async () => {
 
 const daysSlice = createSlice({
   name: 'days',
-  initialState: {
-    daysList: [],
+  initialState: daysAdapter.getInitialState({
     selectedDay: 'Monday',
-  },
+  }),
   reducers: {
     daySelected(state, action) {
       const { selectedDay } = action.payload;
