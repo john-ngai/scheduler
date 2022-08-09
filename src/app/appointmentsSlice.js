@@ -20,6 +20,7 @@ export const fetchAppointments = createAsyncThunk(
   }
 );
 
+// REMINDER - Should be renamed to updateAppointment
 export const addAppointment = createAsyncThunk(
   'appointments/addAppointment',
   async (action) => {
