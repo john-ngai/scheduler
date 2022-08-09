@@ -1,10 +1,12 @@
+import { selectAllDays } from '../features/days/daysSlice';
+
 // Return true only when all of the state data is loaded.
 export const isStateLoaded = (state) => {
-  const daysList = state.days.daysList;
+  const allDays = selectAllDays(state);
   const appointments = state.appointments;
   const interviewers = state.interviewers;
 
-  if (daysList.length === 0) {
+  if (allDays.length === 0) {
     return false;
   }
 
