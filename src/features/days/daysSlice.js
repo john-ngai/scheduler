@@ -38,20 +38,18 @@ const daysSlice = createSlice({
     builder
       .addCase(fetchDays.fulfilled, (state, action) => {
         daysAdapter.upsertMany(state, action.payload);
-        // return { ...state, daysList: action.payload };
-        // postsAdapter.upsertMany(state, action.payload)
       })
       .addCase(updateAppointment.fulfilled, (state, action) => {
         const { newDayListItem } = action.payload;
         const { id, spots } = newDayListItem;
-        const oldDayListItem = state.daysList.find((day) => day.id === id);
-        oldDayListItem.spots = spots;
+        const update = { id, changes: { spots } };
+        daysAdapter.updateOne(state, update);
       })
       .addCase(deleteAppointment.fulfilled, (state, action) => {
         const { newDayListItem } = action.payload;
         const { id, spots } = newDayListItem;
-        const oldDayListItem = state.daysList.find((day) => day.id === id);
-        oldDayListItem.spots = spots;
+        const update = { id, changes: { spots } };
+        daysAdapter.updateOne(state, update);
       });
   },
 });
@@ -71,30 +69,33 @@ export default daysSlice.reducer;
 
 // Customized selectors for the daysAdapter.
 export const {
-  selectAll: selectAllDays, // ** Used in DayList.js ** - Returns an array of all the entities.
+  selectAll: selectAllDays, // ** Used in DayList.js & helpers.js ** - Returns an array of all the entities.
   selectById: selectDayById, // Given (state, id), returns entity with that id or undefined.
-  selectIds: selectDayIds // Returns an array of all the ids.
-} = daysAdapter.getSelectors(state => state.days)
+  selectIds: selectDayIds, // Returns an array of all the ids.
+} = daysAdapter.getSelectors((state) => state.days);
 
 export const selectDayListItemBySelectedDay = (state) => {
-  const daysList = state.days.daysList;
+  // const daysList = state.days.daysList;
+  const allDays = selectAllDays(state);
   const selectedDay = state.days.selectedDay;
-  const dayListItem = daysList.find((day) => day.name === selectedDay);
+  const dayListItem = allDays.find((day) => day.name === selectedDay);
   return dayListItem;
 };
 
 export const selectAppointmentIdsBySelectedDay = (state) => {
-  const daysList = state.days.daysList;
+  // const daysList = state.days.daysList;
+  const allDays = selectAllDays(state);
   const selectedDay = state.days.selectedDay;
-  const selectedDayList = daysList.find((day) => day.name === selectedDay);
+  const selectedDayList = allDays.find((day) => day.name === selectedDay);
   const appointmentIds = selectedDayList.appointments;
   return appointmentIds;
 };
 
 export const selectInterviewerIdsBySelectedDay = (state) => {
-  const daysList = state.days.daysList;
+  // const daysList = state.days.daysList;
+  const allDays = selectAllDays(state);
   const selectedDay = state.days.selectedDay;
-  const selectedDayList = daysList.find((day) => day.name === selectedDay);
+  const selectedDayList = allDays.find((day) => day.name === selectedDay);
   const interviewerIds = selectedDayList.interviewers;
   return interviewerIds;
 };
