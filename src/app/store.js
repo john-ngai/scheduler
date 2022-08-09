@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import daysReducer from './daysSlice';
-import appointmentsReducer from './appointmentsSlice';
+import appointmentsReducer from '../features/appointments/appointmentsSlice';
 import interviewersReducer from './interviewersSlice';
 
 export default configureStore({

@@ -2,14 +2,14 @@
 import React, { useEffect } from 'react';
 // Components
 import DayList from 'components/DayList.js';
-import Appointment from 'components/Appointment';
+import Appointment from '../features/appointments/Appointment';
 // Redux
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchDays, selectInterviewerIdsBySelectedDay } from '../app/daysSlice';
 import {
   fetchAppointments,
   selectAppointmentsBySelectedDay,
-} from '../app/appointmentsSlice';
+} from '../features/appointments/appointmentsSlice';
 import {
   fetchInterviewers,
   selectInterviewersByDay,

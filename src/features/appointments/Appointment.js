@@ -14,7 +14,7 @@ import {
   updateAppointment,
   deleteAppointment,
   updateVisualMode,
-} from '../../app/appointmentsSlice';
+} from '../../features/appointments/appointmentsSlice';
 import {
   selectDayListItemBySelectedDay,
   selectAppointmentIdsBySelectedDay,
