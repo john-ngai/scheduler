@@ -1,6 +1,5 @@
-// Packages
+// React
 import React, { useEffect } from 'react';
-// Components
 import DayList from './features/days/DayList';
 import Appointment from './features/appointments/Appointment';
 // Redux
