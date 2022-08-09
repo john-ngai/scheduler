@@ -25,36 +25,33 @@ import './App.scss';
 export default function App() {
   const dispatch = useDispatch();
 
-  // Dispatch thunks to fetch the API data & set the intial state.
+  // Dispatch thunks to fetch & set the state from API.
   useEffect(() => {
     dispatch(fetchDays());
     dispatch(fetchAppointments());
     dispatch(fetchInterviewers());
   }, [dispatch]);
 
-  // Initial value before fetching the API data.
+  // Render an empty schedule before the state is set.
   let schedule = null;
 
   const state = useSelector((state) => state);
 
-  // Proceed only when the entire initial state has been loaded
-  // (i.e., days, appointments, interviewers)
+  // Create the schedule after successfully setting the entire state.
   if (isStateLoaded(state)) {
     const appointments = selectAppointmentsBySelectedDay(state);
-    schedule = appointments.map((appointment) => {
-      return (
-        <Appointment
-          key={appointment.id}
-          id={appointment.id}
-          time={appointment.time}
-          interview={formatInterview(state, appointment.interview)}
-          interviewers={selectInterviewersByDay(
-            state,
-            selectInterviewerIdsBySelectedDay(state)
-          )}
-        />
-      );
-    });
+    schedule = appointments.map((appointment) => (
+      <Appointment
+        key={appointment.id}
+        id={appointment.id}
+        time={appointment.time}
+        interview={formatInterview(state, appointment.interview)}
+        interviewers={selectInterviewersByDay(
+          state,
+          selectInterviewerIdsBySelectedDay(state)
+        )}
+      />
+    ));
   }
 
   return (
