@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchDays, selectInterviewerIdsByDay } from '../app/daysSlice';
 import {
   fetchAppointments,
-  selectAppointmentsByDay,
+  selectAppointmentsBySelectedDay,
 } from '../app/appointmentsSlice';
 import {
   fetchInterviewers,
@@ -37,7 +37,8 @@ export default function Application() {
   // Proceed only when the entire initial state has been loaded
   // (i.e., days, appointments, interviewers)
   if (isStateLoaded(state)) {
-    const appointments = selectAppointmentsByDay(state);
+    const appointments = selectAppointmentsBySelectedDay(state);
+    console.log(appointments);
     schedule = appointments.map((appointment) => {
       return (
         <Appointment

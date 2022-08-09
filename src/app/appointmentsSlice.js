@@ -91,7 +91,7 @@ export const { updateVisualMode } = appointmentsSlice.actions;
 
 export default appointmentsSlice.reducer;
 
-export const selectAppointmentsByDay = (state) => {
+export const selectAppointmentsBySelectedDay = (state) => {
   const allAppointments = state.appointments;
   const selectedAppointments = [];
   const daysList = state.days.daysList;
