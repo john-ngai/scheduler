@@ -21,13 +21,6 @@ const daysSlice = createSlice({
   initialState: daysAdapter.getInitialState({
     selectedDay: 'Monday',
   }),
-  /*
-  {
-    ids: [],
-    entities: {},
-    selectedDay: '',
-  }
-  */
   reducers: {
     daySelected(state, action) {
       const { selectedDay } = action.payload;
@@ -70,7 +63,7 @@ export default daysSlice.reducer;
 // Customized selectors for the daysAdapter.
 export const {
   selectAll: selectAllDays, // ** Used in DayList.js & helpers.js ** - Returns an array of all the entities.
-  selectById: selectDayById, // Given (state, id), returns entity with that id or undefined.
+  selectById: selectDayById, // Given (state, id), returns the entity with that id or undefined.
   selectIds: selectDayIds, // Returns an array of all the ids.
 } = daysAdapter.getSelectors((state) => state.days);
 
