@@ -20,7 +20,7 @@ import {
   selectAppointmentIdsBySelectedDay,
 } from '../../features/days/daysSlice';
 // Helpher function
-import { getSpotsRemaining } from '../../helpers';
+import { getSpotsRemaining } from '../../helpers/helpers';
 // Stylesheet
 import './Appointment.scss';
 

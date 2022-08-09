@@ -18,7 +18,7 @@ import {
   selectInterviewersByDay,
 } from './features/interviewers/interviewersSlice';
 // Helper functions
-import { isStateLoaded, formatInterview } from './helpers';
+import { isStateLoaded, formatInterview } from './helpers/helpers';
 // Stylesheet
 import './App.scss';
 
