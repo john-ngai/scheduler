@@ -20,14 +20,13 @@ export const fetchAppointments = createAsyncThunk(
   }
 );
 
-// REMINDER - Should be renamed to updateAppointment
-export const addAppointment = createAsyncThunk(
-  'appointments/addAppointment',
+export const updateAppointment = createAsyncThunk(
+  'appointments/updateAppointment',
   async (action) => {
     const { appointment } = action.payload;
     const { id } = appointment;
     await axios.put(`/api/appointments/${id}`, appointment);
-    return action.payload; // { appointment, selectedDay }
+    return action.payload; // { appointment, newDayListItem }
   }
 );
 
@@ -37,7 +36,7 @@ export const deleteAppointment = createAsyncThunk(
     const { appointment } = action.payload;
     const { id } = appointment;
     await axios.delete(`/api/appointments/${id}`);
-    return action.payload; // { appointment, selectedDay }
+    return action.payload; // { appointment, newDayListItem }
   }
 );
 
@@ -55,17 +54,17 @@ const appointmentsSlice = createSlice({
       .addCase(fetchAppointments.fulfilled, (state, action) => {
         return action.payload;
       })
-      .addCase(addAppointment.pending, (state, action) => {
+      .addCase(updateAppointment.pending, (state, action) => {
         const { appointment } = action.meta.arg.payload;
         const { id } = appointment;
         state[id].visualMode = 'SAVING';
       })
-      .addCase(addAppointment.fulfilled, (state, action) => {
+      .addCase(updateAppointment.fulfilled, (state, action) => {
         const { appointment } = action.payload;
         const { id, interview } = appointment;
         state[id] = { ...appointment, interview, visualMode: 'SHOW' };
       })
-      .addCase(addAppointment.rejected, (state, action) => {
+      .addCase(updateAppointment.rejected, (state, action) => {
         const { appointment } = action.meta.arg.payload;
         const { id } = appointment;
         state[id].visualMode = 'ERROR_SAVE';

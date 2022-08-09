@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { addAppointment, deleteAppointment } from './appointmentsSlice';
+import { updateAppointment, deleteAppointment } from './appointmentsSlice';
 
 export const fetchDays = createAsyncThunk('days/fetchDays', async () => {
   const response = await axios.get('/api/days');
@@ -24,7 +24,7 @@ const daysSlice = createSlice({
       .addCase(fetchDays.fulfilled, (state, action) => {
         return { ...state, daysList: action.payload };
       })
-      .addCase(addAppointment.fulfilled, (state, action) => {
+      .addCase(updateAppointment.fulfilled, (state, action) => {
         const { newDayListItem } = action.payload;
         const { id, spots } = newDayListItem;
         const oldDayListItem = state.daysList.find(day => day.id === id);

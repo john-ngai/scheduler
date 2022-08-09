@@ -11,7 +11,7 @@ import Confirm from 'components/Appointment/Confirm';
 import Error from 'components/Appointment/Error';
 // Redux
 import {
-  addAppointment,
+  updateAppointment,
   deleteAppointment,
   updateVisualMode,
 } from '../../app/appointmentsSlice';
@@ -43,7 +43,7 @@ export default function Appointment(props) {
     const newAppointments = { ...appointments, [id]: { ...appointment } };
     const spots = getSpotsRemaining(newAppointments, apppointmentIds);
     const newDayListItem = { ...dayListItem, spots };
-    dispatch(addAppointment({ payload: { appointment, newDayListItem } }));
+    dispatch(updateAppointment({ payload: { appointment, newDayListItem } }));
   };
 
   // Destroy an existing appointment.
