@@ -1,5 +1,5 @@
 // React
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import DayList from './features/days/DayList';
 import AppointmentsList from 'features/appointments/AppointmentsList';
 // Redux
@@ -13,11 +13,22 @@ import './App.scss';
 export default function App() {
   const dispatch = useDispatch();
 
-  // Dispatch thunks to fetch & set the state from API.
+  const [render, setRender] = useState(false);
+
   useEffect(() => {
-    dispatch(fetchDays());
-    dispatch(fetchAppointments());
-    dispatch(fetchInterviewers());
+    // Dispatch thunks to fetch & set the state from API.
+    Promise.all([
+      dispatch(fetchDays()),
+      dispatch(fetchAppointments()),
+      dispatch(fetchInterviewers()),
+    ])
+      // Render the components only when all the fetch calls are successfully.
+      .then((response) => {
+        if (!response[0].payload) return;
+        if (!response[1].payload) return;
+        if (!response[2].payload) return;
+        setRender(true);
+      });
   }, [dispatch]);
 
   return (
@@ -29,16 +40,14 @@ export default function App() {
           alt="Interview Scheduler"
         />
         <hr className="sidebar__separator sidebar--centered" />
-        <nav className="sidebar__menu">
-          <DayList />
-        </nav>
+        <nav className="sidebar__menu">{render && <DayList />}</nav>
         <img
           className="sidebar__lhl sidebar--centered"
           src="images/lhl.png"
           alt="Lighthouse Labs"
         />
       </section>
-      <AppointmentsList />
+      {render && <AppointmentsList />}
     </main>
   );
 }
