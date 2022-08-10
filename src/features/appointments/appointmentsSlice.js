@@ -4,7 +4,6 @@ import {
   createAsyncThunk,
   createSlice,
 } from '@reduxjs/toolkit';
-import { selectAllDays } from '../days/daysSlice';
 
 const appointmentsAdapter = createEntityAdapter();
 
@@ -33,7 +32,7 @@ export const updateAppointment = createAsyncThunk(
     const { appointment } = action.payload;
     const { id } = appointment;
     await axios.put(`/api/appointments/${id}`, appointment);
-    return action.payload; // { appointment, newDayListItem }
+    return action.payload; // { appointment, day }
   }
 );
 
@@ -43,7 +42,7 @@ export const deleteAppointment = createAsyncThunk(
     const { appointment } = action.payload;
     const { id } = appointment;
     await axios.delete(`/api/appointments/${id}`);
-    return action.payload; // { appointment, newDayListItem }
+    return action.payload; // { appointment, day }
   }
 );
 
@@ -105,48 +104,6 @@ export const { updateVisualMode } = appointmentsSlice.actions;
 
 export default appointmentsSlice.reducer;
 
-/*
-  selectIds: returns the state.ids array.
-  selectEntities: returns the state.entities lookup table.
-  selectAll: maps over the state.ids array, and returns an array of entities in the same order.
-  selectTotal: returns the total number of entities being stored in this state.
-  selectById: given the state and an entity ID, returns the entity with that ID or undefined.
-*/
-
-// Customized selectors for the appointmentsAdapter.
 export const {
-  selectAll: selectAllAppointments, // Returns an array of all the entities.
-  selectById: selectAppointmentById, // Given (state, id), returns the entity with that id or undefined.
-  selectIds: selectAppointmentIds, // Returns an array of all the ids.
-  selectEntities: selectAppointmentEntities, // ** Used in appointmentsSlice.js & Appointment.js ** - Returns the state.entities lookup table.
+  selectById: selectAppointmentById, // Given (state, id), return the entity.
 } = appointmentsAdapter.getSelectors((state) => state.appointments);
-
-export const selectAppointmentsBySelectedDay = (state) => {
-  const allAppointments = selectAppointmentEntities(state);
-  const selectedAppointments = [];
-  const allDays = selectAllDays(state);
-  const selectedDay = state.days.selectedDay;
-
-  // If the allDays array is empty, return the empty selectedAppointments array.
-  if (allDays.length === 0) {
-    return selectedAppointments;
-  }
-
-  if (allDays.length > 0) {
-    allDays.forEach((day) => {
-      if (day.name === selectedDay) {
-        // Store the array of appointment ids for the selected day.
-        const appointmentIds = day.appointments;
-
-        // Push each matching appointment object into the selectedAppointments array.
-        appointmentIds.forEach((id) =>
-          selectedAppointments.push(allAppointments[id])
-        );
-        return selectedAppointments;
-      }
-    });
-  }
-
-  // Return an empty selectedAppointments array if no day is selected.
-  return selectedAppointments;
-};
