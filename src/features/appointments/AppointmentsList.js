@@ -1,6 +1,6 @@
 // React
 import React from 'react'
-import Appointment from './Appointment';
+import AppointmentListItem from './AppointmentListItem';
 // Helper functions
 import { formatInterview, isStateLoaded } from 'helpers/helpers';
 // Redux
@@ -19,7 +19,7 @@ export default function AppointmentsList() {
   if (isStateLoaded(state)) {
     const appointments = selectAppointmentsBySelectedDay(state);
     renderedAppointments = appointments.map((appointment) => (
-      <Appointment
+      <AppointmentListItem
         key={appointment.id}
         id={appointment.id}
         time={appointment.time}
@@ -35,7 +35,7 @@ export default function AppointmentsList() {
     <section className="schedule">
       {renderedAppointments}
       {isStateLoaded(state) ? (
-        <Appointment key="last" id="last" time="5pm" />
+        <AppointmentListItem key="last" id="last" time="5pm" />
       ) : null}
     </section>
   );

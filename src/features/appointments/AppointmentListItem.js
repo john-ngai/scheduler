@@ -22,9 +22,9 @@ import {
 // Helper function
 import { getSpotsRemaining } from '../../helpers/helpers';
 // Stylesheet
-import './Appointment.scss';
+import './AppointmentListItem.scss';
 
-export default function Appointment(props) {
+export default function AppointmentListItem(props) {
   const dispatch = useDispatch();
   const appointments = useSelector((state) => selectAppointmentEntities(state));
   const dayListItem = useSelector(selectDayListItemBySelectedDay);
