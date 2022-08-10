@@ -1,5 +1,5 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 export const fetchInterviewers = createAsyncThunk(
   'interviewers/fetchInterviewers',
@@ -22,13 +22,13 @@ const interviewersSlice = createSlice({
 
 export default interviewersSlice.reducer;
 
-// Given the state & array of interviewer ids for the selected day,
-// return an array of the complete interviewer objects.
-export const selectInterviewersByDay = (state, interviewerIds) => {
-  const allInterviewers = state.interviewers;
+export const selectAllInterviewers = state => state.interviewers;
+
+// Returns an array of interviewer objects.
+export const selectInterviewersById = (allInterviewers, interviewerIds) => {
   const selectedInterviewers = [];
   interviewerIds.forEach((id) => {
     selectedInterviewers.push(allInterviewers[id]);
   });
   return selectedInterviewers;
-};
+}
