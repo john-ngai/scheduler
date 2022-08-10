@@ -80,13 +80,9 @@ export const selectAppointmentIdsBySelectedDay = (allDays, selectedDay) => {
   return day.appointments;
 }
 
-export const selectInterviewerIdsBySelectedDay = (state) => {
-  // const daysList = state.days.daysList;
-  const allDays = selectAllDays(state);
-  const selectedDay = state.days.selectedDay;
-  const selectedDayList = allDays.find((day) => day.name === selectedDay);
-  const interviewerIds = selectedDayList.interviewers;
-  return interviewerIds;
-};
+export const selectInterviewerIdsBySelectedDay = (allDays, selectedDay) => {
+  const day = allDays.find(day => day.name === selectedDay);
+  return day.interviewers;
+}
 
 export const selectSelectedDay = state => state.days.selectedDay;
