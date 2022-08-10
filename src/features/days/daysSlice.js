@@ -62,7 +62,7 @@ export default daysSlice.reducer;
 
 // Customized selectors for the daysAdapter.
 export const {
-  selectAll: selectAllDays, // ** Used in DayList.js & helpers.js ** - Returns an array of all the entities.
+  selectAll: selectAllDays, // ** Used in DayList.js, helpers.js, & AppointmentsList.js ** - Returns an array of all the entities.
   selectById: selectDayById, // Given (state, id), returns the entity with that id or undefined.
   selectIds: selectDayIds, // Returns an array of all the ids.
 } = daysAdapter.getSelectors((state) => state.days);
@@ -75,14 +75,10 @@ export const selectDayListItemBySelectedDay = (state) => {
   return dayListItem;
 };
 
-export const selectAppointmentIdsBySelectedDay = (state) => {
-  // const daysList = state.days.daysList;
-  const allDays = selectAllDays(state);
-  const selectedDay = state.days.selectedDay;
-  const selectedDayList = allDays.find((day) => day.name === selectedDay);
-  const appointmentIds = selectedDayList.appointments;
-  return appointmentIds;
-};
+export const selectAppointmentIdsBySelectedDay = (allDays, selectedDay) => {
+  const day = allDays.find(day => day.name === selectedDay);
+  return day.appointments;
+}
 
 export const selectInterviewerIdsBySelectedDay = (state) => {
   // const daysList = state.days.daysList;
@@ -92,3 +88,5 @@ export const selectInterviewerIdsBySelectedDay = (state) => {
   const interviewerIds = selectedDayList.interviewers;
   return interviewerIds;
 };
+
+export const selectSelectedDay = state => state.days.selectedDay;
