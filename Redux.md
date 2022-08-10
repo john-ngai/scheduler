@@ -1,5 +1,7 @@
 # Redux Implementation Logs
 
+Last Updated: 10 Aug 2022
+
 ## Changes to the `/src` Directory
 
 **From**: <br>
