@@ -33,14 +33,14 @@ const daysSlice = createSlice({
         daysAdapter.upsertMany(state, action.payload);
       })
       .addCase(updateAppointment.fulfilled, (state, action) => {
-        const { newDayListItem } = action.payload;
-        const { id, spots } = newDayListItem;
+        const { day } = action.payload;
+        const { id, spots } = day;
         const update = { id, changes: { spots } };
         daysAdapter.updateOne(state, update);
       })
       .addCase(deleteAppointment.fulfilled, (state, action) => {
-        const { newDayListItem } = action.payload;
-        const { id, spots } = newDayListItem;
+        const { day } = action.payload;
+        const { id, spots } = day;
         const update = { id, changes: { spots } };
         daysAdapter.updateOne(state, update);
       });
@@ -83,6 +83,11 @@ export const selectAppointmentIdsBySelectedDay = (allDays, selectedDay) => {
 export const selectInterviewerIdsBySelectedDay = (allDays, selectedDay) => {
   const day = allDays.find(day => day.name === selectedDay);
   return day.interviewers;
+}
+
+export const selectSpotsBySelectedDay = (allDays, selectedDay) => {
+  const day = allDays.find(day => day.name === selectedDay);
+  return day.spots;
 }
 
 export const selectSelectedDay = state => state.days.selectedDay;
