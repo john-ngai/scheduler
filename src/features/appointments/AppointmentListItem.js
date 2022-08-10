@@ -14,22 +14,32 @@ import {
   updateVisualMode,
   updateAppointment,
   deleteAppointment,
+  selectAppointmentById,
 } from '../../features/appointments/appointmentsSlice';
 import {
   selectDayListItemBySelectedDay,
   selectAppointmentIdsBySelectedDay,
+  selectInterviewerIdsBySelectedDay,
 } from '../../features/days/daysSlice';
+import { selectInterviewersByDay } from 'features/interviewers/interviewersSlice';
 // Helper function
-import { getSpotsRemaining } from '../../helpers/helpers';
+import { formatInterview, getSpotsRemaining } from '../../helpers/helpers';
 // Stylesheet
 import './AppointmentListItem.scss';
 
 export default function AppointmentListItem(props) {
   const dispatch = useDispatch();
-  const appointments = useSelector((state) => selectAppointmentEntities(state));
+  const state = useSelector((state) => state);
+  const appointments = selectAppointmentEntities(state);
   const dayListItem = useSelector(selectDayListItemBySelectedDay);
   const apppointmentIds = useSelector(selectAppointmentIdsBySelectedDay);
-  const id = props.id;
+  const id = props.appointmentId;
+
+  const selectedAppointment = selectAppointmentById(state, id);
+  const interviewers = selectInterviewersByDay(
+    state,
+    selectInterviewerIdsBySelectedDay(state)
+  );
 
   // Save a new appointment or update an existing one.
   const onSaveHandler = (name, interviewer) => {
@@ -69,31 +79,37 @@ export default function AppointmentListItem(props) {
       case 'EMPTY':
         content = <Empty onAdd={() => transition('CREATE')} />;
         break;
-      case 'SHOW':
+      case 'SHOW': // Changed
         content = (
           <Show
-            student={props.interview.student}
-            interviewer={props.interview.interviewer.name}
+            student={selectedAppointment.interview.student} // Changed
+            interviewer={
+              formatInterview(state, selectedAppointment.interview).interviewer
+                .name
+            } // Changed
             onEdit={() => transition('UPDATE')}
             onDestroy={() => transition('CONFIRM')}
           />
         );
         break;
-      case 'CREATE':
+      case 'CREATE': // Changed
         content = (
           <Form
-            interviewers={props.interviewers}
+            interviewers={interviewers} // Changed
             onSave={onSaveHandler}
             onCancel={() => transition('EMPTY')}
           />
         );
         break;
-      case 'UPDATE':
+      case 'UPDATE': // Changed
         content = (
           <Form
-            interviewers={props.interviewers}
-            student={props.interview.student}
-            interviewer={props.interview.interviewer.id}
+            interviewers={interviewers} // Changed
+            student={selectedAppointment.interview.student}
+            interviewer={
+              formatInterview(state, selectedAppointment.interview).interviewer
+                .name
+            } // Changed
             onSave={onSaveHandler}
             onCancel={() => transition('SHOW')}
           />
@@ -136,7 +152,8 @@ export default function AppointmentListItem(props) {
 
   return (
     <article className="appointment">
-      <Header time={props.time} />
+      {id !== 'last' && <Header time={selectedAppointment.time} />}
+      {id === 'last' && <Header time={props.time} />}
       {content}
     </article>
   );
