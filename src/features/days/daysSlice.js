@@ -52,14 +52,6 @@ export const { daySelected, spotsIncremented, spotsDecremented } =
 
 export default daysSlice.reducer;
 
-/*
-  selectIds: returns the state.ids array.
-  selectEntities: returns the state.entities lookup table.
-  selectAll: maps over the state.ids array, and returns an array of entities in the same order.
-  selectTotal: returns the total number of entities being stored in this state.
-  selectById: given the state and an entity ID, returns the entity with that ID or undefined.
-*/
-
 export const {
   selectAll: selectAllDays, // Returns an array of all the day entities.
 } = daysAdapter.getSelectors((state) => state.days);
