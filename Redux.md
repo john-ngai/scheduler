@@ -49,7 +49,7 @@ Last Updated: 10 Aug 2022
 * `useApplicationData.js`
 * `useVisualMode.js`
 
-## Existiing Files Editted
+## Existing Files Editted
 
 * `/src/index.js`
 * `App.js`
