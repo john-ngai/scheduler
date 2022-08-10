@@ -1,13 +1,17 @@
 import React from 'react';
 import DayListItem from './DayListItem';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectAllDays, daySelected } from '../../features/days/daysSlice';
+import {
+  selectAllDays,
+  selectSelectedDay,
+  daySelected,
+} from '../../features/days/daysSlice';
 
 export default function DayList() {
   const dispatch = useDispatch();
 
   const allDays = useSelector(selectAllDays);
-  const selectedDay = useSelector((state) => state.days.selectedDay);
+  const selectedDay = useSelector(selectSelectedDay);
 
   const listItems = allDays.map((day) => (
     <DayListItem
