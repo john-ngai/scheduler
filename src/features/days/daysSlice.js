@@ -1,9 +1,15 @@
 import axios from 'axios';
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import {
+  createEntityAdapter,
+  createAsyncThunk,
+  createSlice,
+} from '@reduxjs/toolkit';
 import {
   updateAppointment,
   deleteAppointment,
 } from '../appointments/appointmentsSlice';
+
+const daysAdapter = createEntityAdapter();
 
 export const fetchDays = createAsyncThunk('days/fetchDays', async () => {
   const response = await axios.get('/api/days');
@@ -12,10 +18,9 @@ export const fetchDays = createAsyncThunk('days/fetchDays', async () => {
 
 const daysSlice = createSlice({
   name: 'days',
-  initialState: {
-    daysList: [],
+  initialState: daysAdapter.getInitialState({
     selectedDay: 'Monday',
-  },
+  }),
   reducers: {
     daySelected(state, action) {
       const { selectedDay } = action.payload;
@@ -25,19 +30,19 @@ const daysSlice = createSlice({
   extraReducers(builder) {
     builder
       .addCase(fetchDays.fulfilled, (state, action) => {
-        return { ...state, daysList: action.payload };
+        daysAdapter.upsertMany(state, action.payload);
       })
       .addCase(updateAppointment.fulfilled, (state, action) => {
-        const { newDayListItem } = action.payload;
-        const { id, spots } = newDayListItem;
-        const oldDayListItem = state.daysList.find((day) => day.id === id);
-        oldDayListItem.spots = spots;
+        const { day } = action.payload;
+        const { id, spots } = day;
+        const update = { id, changes: { spots } };
+        daysAdapter.updateOne(state, update);
       })
       .addCase(deleteAppointment.fulfilled, (state, action) => {
-        const { newDayListItem } = action.payload;
-        const { id, spots } = newDayListItem;
-        const oldDayListItem = state.daysList.find((day) => day.id === id);
-        oldDayListItem.spots = spots;
+        const { day } = action.payload;
+        const { id, spots } = day;
+        const update = { id, changes: { spots } };
+        daysAdapter.updateOne(state, update);
       });
   },
 });
@@ -47,25 +52,31 @@ export const { daySelected, spotsIncremented, spotsDecremented } =
 
 export default daysSlice.reducer;
 
-export const selectDayListItemBySelectedDay = (state) => {
-  const daysList = state.days.daysList;
-  const selectedDay = state.days.selectedDay;
-  const dayListItem = daysList.find((day) => day.name === selectedDay);
-  return dayListItem;
+export const {
+  selectAll: selectAllDays, // Returns an array of all the day entities.
+} = daysAdapter.getSelectors((state) => state.days);
+
+export const selectSelectedDay = (state) => state.days.selectedDay;
+
+export const selectDayEntityBySelectedDay = (allDays, selectedDay) => {
+  const day = allDays.find((day) => day.name === selectedDay);
+  return day;
 };
 
-export const selectAppointmentIdsBySelectedDay = (state) => {
-  const daysList = state.days.daysList;
-  const selectedDay = state.days.selectedDay;
-  const selectedDayList = daysList.find((day) => day.name === selectedDay);
-  const appointmentIds = selectedDayList.appointments;
-  return appointmentIds;
+// Returns the array of appointment ids for the selectedDay.
+export const selectAppointmentIdsBySelectedDay = (allDays, selectedDay) => {
+  const day = allDays.find((day) => day.name === selectedDay);
+  return day.appointments;
 };
 
-export const selectInterviewerIdsBySelectedDay = (state) => {
-  const daysList = state.days.daysList;
-  const selectedDay = state.days.selectedDay;
-  const selectedDayList = daysList.find((day) => day.name === selectedDay);
-  const interviewerIds = selectedDayList.interviewers;
-  return interviewerIds;
+// Returns the array of interviewer ids for the selectedDay.
+export const selectInterviewerIdsBySelectedDay = (allDays, selectedDay) => {
+  const day = allDays.find((day) => day.name === selectedDay);
+  return day.interviewers;
+};
+
+// Return the number of spots remaining for the selectedDay.
+export const selectSpotsBySelectedDay = (allDays, selectedDay) => {
+  const day = allDays.find((day) => day.name === selectedDay);
+  return day.spots;
 };

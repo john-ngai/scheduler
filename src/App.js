@@ -1,57 +1,35 @@
 // React
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import DayList from './features/days/DayList';
-import Appointment from './features/appointments/Appointment';
+import AppointmentsList from 'features/appointments/AppointmentsList';
 // Redux
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  fetchDays,
-  selectInterviewerIdsBySelectedDay,
-} from './features/days/daysSlice';
-import {
-  fetchAppointments,
-  selectAppointmentsBySelectedDay,
-} from './features/appointments/appointmentsSlice';
-import {
-  fetchInterviewers,
-  selectInterviewersByDay,
-} from './features/interviewers/interviewersSlice';
-// Helper functions
-import { isStateLoaded, formatInterview } from './helpers/helpers';
+import { useDispatch } from 'react-redux';
+import { fetchDays } from './features/days/daysSlice';
+import { fetchAppointments } from './features/appointments/appointmentsSlice';
+import { fetchInterviewers } from './features/interviewers/interviewersSlice';
 // Stylesheet
 import './App.scss';
 
 export default function App() {
   const dispatch = useDispatch();
 
-  // Dispatch thunks to fetch & set the state from API.
+  const [render, setRender] = useState(false);
+
   useEffect(() => {
-    dispatch(fetchDays());
-    dispatch(fetchAppointments());
-    dispatch(fetchInterviewers());
+    // Dispatch thunks to fetch & set the state from API.
+    Promise.all([
+      dispatch(fetchDays()),
+      dispatch(fetchAppointments()),
+      dispatch(fetchInterviewers()),
+    ])
+      // Render the components only when all the fetch calls are successfully.
+      .then((response) => {
+        if (!response[0].payload) return;
+        if (!response[1].payload) return;
+        if (!response[2].payload) return;
+        setRender(true);
+      });
   }, [dispatch]);
-
-  // Render an empty schedule before the state is set.
-  let schedule = null;
-
-  const state = useSelector((state) => state);
-
-  // Create the schedule after successfully setting the entire state.
-  if (isStateLoaded(state)) {
-    const appointments = selectAppointmentsBySelectedDay(state);
-    schedule = appointments.map((appointment) => (
-      <Appointment
-        key={appointment.id}
-        id={appointment.id}
-        time={appointment.time}
-        interview={formatInterview(state, appointment.interview)}
-        interviewers={selectInterviewersByDay(
-          state,
-          selectInterviewerIdsBySelectedDay(state)
-        )}
-      />
-    ));
-  }
 
   return (
     <main className="layout">
@@ -62,21 +40,14 @@ export default function App() {
           alt="Interview Scheduler"
         />
         <hr className="sidebar__separator sidebar--centered" />
-        <nav className="sidebar__menu">
-          <DayList />
-        </nav>
+        <nav className="sidebar__menu">{render && <DayList />}</nav>
         <img
           className="sidebar__lhl sidebar--centered"
           src="images/lhl.png"
           alt="Lighthouse Labs"
         />
       </section>
-      <section className="schedule">
-        {schedule}
-        {isStateLoaded(state) ? (
-          <Appointment key="last" id="last" time="5pm" />
-        ) : null}
-      </section>
+      {render && <AppointmentsList />}
     </main>
   );
 }
