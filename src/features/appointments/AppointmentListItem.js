@@ -10,111 +10,138 @@ import Confirm from './Confirm';
 // Redux
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  selectAppointmentEntities,
-  updateVisualMode,
-  updateAppointment,
-  deleteAppointment,
-  selectAppointmentById,
-} from '../../features/appointments/appointmentsSlice';
-import {
-  selectDayListItemBySelectedDay,
-  selectAppointmentIdsBySelectedDay,
-  selectInterviewerIdsBySelectedDay,
   selectAllDays,
   selectSelectedDay,
+  selectDayEntityBySelectedDay,
+  selectInterviewerIdsBySelectedDay,
+  selectSpotsBySelectedDay,
 } from '../../features/days/daysSlice';
-import { selectInterviewersByDay } from 'features/interviewers/interviewersSlice';
-// Helper function
-import { formatInterview, getSpotsRemaining } from '../../helpers/helpers';
+import {
+  selectAppointmentById,
+  updateAppointment,
+  deleteAppointment,
+  updateVisualMode,
+} from '../../features/appointments/appointmentsSlice';
+import {
+  selectAllInterviewers,
+  selectInterviewersById,
+} from 'features/interviewers/interviewersSlice';
 // Stylesheet
 import './AppointmentListItem.scss';
 
 export default function AppointmentListItem(props) {
   const dispatch = useDispatch();
-  const state = useSelector((state) => state);
-  const appointments = selectAppointmentEntities(state);
-  const dayListItem = useSelector(selectDayListItemBySelectedDay);
 
   const allDays = useSelector(selectAllDays);
   const selectedDay = useSelector(selectSelectedDay);
-  const appointmentIds = selectAppointmentIdsBySelectedDay(allDays, selectedDay);
-  const id = props.appointmentId;
+  const day = selectDayEntityBySelectedDay(allDays, selectedDay);
+  const dayId = day.id;
 
-  const selectedAppointment = selectAppointmentById(state, id);
-  const interviewers = selectInterviewersByDay(
-    state,
-    selectInterviewerIdsBySelectedDay(state)
+  const appointmentId = props.appointmentId;
+  const appointment = useSelector((state) =>
+    selectAppointmentById(state, appointmentId)
   );
 
-  // Save a new appointment or update an existing one.
+  const allInterviewers = useSelector(selectAllInterviewers);
+  const interviewerIds = selectInterviewerIdsBySelectedDay(
+    allDays,
+    selectedDay
+  );
+  const interviewers = selectInterviewersById(allInterviewers, interviewerIds);
+
+  let spots = selectSpotsBySelectedDay(allDays, selectedDay);
+
+  // Save (book) a new interview or update an existing one.
   const onSaveHandler = (name, interviewer) => {
-    const appointment = {
-      ...appointments[id],
+    const newAppointment = {
+      ...appointment,
       interview: {
         student: name,
         interviewer,
       },
     };
-    const newAppointments = { ...appointments, [id]: { ...appointment } };
-    const spots = getSpotsRemaining(newAppointments, appointmentIds);
-    const newDayListItem = { ...dayListItem, spots };
-    dispatch(updateAppointment({ payload: { appointment, newDayListItem } }));
+    
+    // Decrement the number of spots only if the original appointment
+    // interview property is null (i.e. not updating an existing interview).
+    if (!appointment.interview) {
+      spots--;
+    }
+    const day = { id: dayId, spots };
+
+    dispatch(
+      updateAppointment({ payload: { appointment: newAppointment, day } })
+    );
   };
 
-  // Destroy an existing appointment.
+  // Destroy (cancel) an existing interview.
   const onDestroyHandler = () => {
-    const appointment = {
-      ...appointments[id],
+    const newAppointment = {
+      ...appointment,
       interview: null,
     };
-    const newAppointments = { ...appointments, [id]: { ...appointment } };
-    const spots = getSpotsRemaining(newAppointments, appointmentIds);
-    const newDayListItem = { ...dayListItem, spots };
-    dispatch(deleteAppointment({ payload: { appointment, newDayListItem } }));
+
+    // Removing an existing interview will free up a slot,
+    // so the number of spots remaining should be incremented.
+    spots++;
+    const day = { id: dayId, spots };
+
+    dispatch(
+      deleteAppointment({ payload: { appointment: newAppointment, day } })
+    );
   };
 
   let content = null;
 
-  if (id !== 'last') {
-    const visualMode = appointments[id].visualMode;
+  if (appointmentId !== 'last') {
+    const visualMode = appointment.visualMode;
     const transition = (visualMode) => {
-      dispatch(updateVisualMode({ id, visualMode }));
+      dispatch(updateVisualMode({ id: appointmentId, visualMode }));
     };
+    
+    /*
+    Formats the interviewer property from
+      { ..., interviewer: Number }
+    to
+      { ..., interviewer: { id, name, avatar } }
+    */
+    const formatInterview = (allInterviewers, interview) => {
+      if (!interview) {
+        return null;
+      }
+      const interviewerId = interview.interviewer;
+      return { ...interview, interviewer: allInterviewers[interviewerId] };
+    };
+    const interview = formatInterview(allInterviewers, appointment.interview);
+
     switch (visualMode) {
       case 'EMPTY':
         content = <Empty onAdd={() => transition('CREATE')} />;
         break;
-      case 'SHOW': // Changed
+      case 'SHOW':
         content = (
           <Show
-            student={selectedAppointment.interview.student} // Changed
-            interviewer={
-              formatInterview(state, selectedAppointment.interview).interviewer
-                .name
-            } // Changed
+            student={interview.student}
+            interviewer={interview.interviewer.name}
             onEdit={() => transition('UPDATE')}
             onDestroy={() => transition('CONFIRM')}
           />
         );
         break;
-      case 'CREATE': // Changed
+      case 'CREATE':
         content = (
           <Form
-            interviewers={interviewers} // Changed
+            interviewers={interviewers}
             onSave={onSaveHandler}
             onCancel={() => transition('EMPTY')}
           />
         );
         break;
-      case 'UPDATE': // Changed
+      case 'UPDATE':
         content = (
           <Form
-            interviewers={interviewers} // Changed
-            student={selectedAppointment.interview.student}
-            interviewer={
-              formatInterview(state, selectedAppointment.interview).interviewer
-                .name
-            } // Changed
+            interviewers={interviewers}
+            student={interview.student}
+            interviewer={interview.interviewer.id}
             onSave={onSaveHandler}
             onCancel={() => transition('SHOW')}
           />
@@ -157,8 +184,8 @@ export default function AppointmentListItem(props) {
 
   return (
     <article className="appointment">
-      {id !== 'last' && <Header time={selectedAppointment.time} />}
-      {id === 'last' && <Header time={props.time} />}
+      {appointmentId !== 'last' && <Header time={appointment.time} />}
+      {appointmentId === 'last' && <Header time={props.time} />}
       {content}
     </article>
   );
