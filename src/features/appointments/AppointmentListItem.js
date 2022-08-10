@@ -20,6 +20,8 @@ import {
   selectDayListItemBySelectedDay,
   selectAppointmentIdsBySelectedDay,
   selectInterviewerIdsBySelectedDay,
+  selectAllDays,
+  selectSelectedDay,
 } from '../../features/days/daysSlice';
 import { selectInterviewersByDay } from 'features/interviewers/interviewersSlice';
 // Helper function
@@ -32,7 +34,10 @@ export default function AppointmentListItem(props) {
   const state = useSelector((state) => state);
   const appointments = selectAppointmentEntities(state);
   const dayListItem = useSelector(selectDayListItemBySelectedDay);
-  const apppointmentIds = useSelector(selectAppointmentIdsBySelectedDay);
+
+  const allDays = useSelector(selectAllDays);
+  const selectedDay = useSelector(selectSelectedDay);
+  const appointmentIds = selectAppointmentIdsBySelectedDay(allDays, selectedDay);
   const id = props.appointmentId;
 
   const selectedAppointment = selectAppointmentById(state, id);
@@ -51,7 +56,7 @@ export default function AppointmentListItem(props) {
       },
     };
     const newAppointments = { ...appointments, [id]: { ...appointment } };
-    const spots = getSpotsRemaining(newAppointments, apppointmentIds);
+    const spots = getSpotsRemaining(newAppointments, appointmentIds);
     const newDayListItem = { ...dayListItem, spots };
     dispatch(updateAppointment({ payload: { appointment, newDayListItem } }));
   };
@@ -63,7 +68,7 @@ export default function AppointmentListItem(props) {
       interview: null,
     };
     const newAppointments = { ...appointments, [id]: { ...appointment } };
-    const spots = getSpotsRemaining(newAppointments, apppointmentIds);
+    const spots = getSpotsRemaining(newAppointments, appointmentIds);
     const newDayListItem = { ...dayListItem, spots };
     dispatch(deleteAppointment({ payload: { appointment, newDayListItem } }));
   };
