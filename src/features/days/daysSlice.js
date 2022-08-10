@@ -71,16 +71,19 @@ export const selectDayEntityBySelectedDay = (allDays, selectedDay) => {
   return day;
 };
 
+// Returns the array of appointment ids for the selectedDay.
 export const selectAppointmentIdsBySelectedDay = (allDays, selectedDay) => {
   const day = allDays.find((day) => day.name === selectedDay);
   return day.appointments;
 };
 
+// Returns the array of interviewer ids for the selectedDay.
 export const selectInterviewerIdsBySelectedDay = (allDays, selectedDay) => {
   const day = allDays.find((day) => day.name === selectedDay);
   return day.interviewers;
 };
 
+// Return the number of spots remaining for the selectedDay.
 export const selectSpotsBySelectedDay = (allDays, selectedDay) => {
   const day = allDays.find((day) => day.name === selectedDay);
   return day.spots;
