@@ -1,6 +1,6 @@
 // React
 import React, { useEffect, useState } from 'react';
-import DayList from './features/days/DayList';
+import DaysList from './features/days/DaysList';
 import AppointmentsList from 'features/appointments/AppointmentsList';
 // Redux
 import { useDispatch } from 'react-redux';
@@ -40,7 +40,7 @@ export default function App() {
           alt="Interview Scheduler"
         />
         <hr className="sidebar__separator sidebar--centered" />
-        <nav className="sidebar__menu">{render && <DayList />}</nav>
+        <nav className="sidebar__menu">{render && <DaysList />}</nav>
         <img
           className="sidebar__lhl sidebar--centered"
           src="images/lhl.png"
