@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Button from '../../components/Button';
-import InterviewerList from '../../features/interviewers/InterviewerList';
+import InterviewersList from '../../features/interviewers/InterviewersList';
 
 // Display to book or edit an existing appointment.
 export default function Form(props) {
@@ -49,7 +49,7 @@ export default function Form(props) {
           />
         </form>
         <section className="appointment__validation">{error}</section>
-        <InterviewerList
+        <InterviewersList
           interviewers={props.interviewers}
           value={interviewer}
           onChange={setInterviewer}
