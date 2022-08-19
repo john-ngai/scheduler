@@ -1,11 +1,10 @@
 import React from 'react';
 
 // Displays the interview appointment details (i.e. timeslot, student, & interviewer).
-export default function(props) {
+export default function (props) {
   return (
     <main className="appointment__card appointment__card--show">
       <section className="appointment__card-left">
-
         <h2 className="text--regular">{props.student}</h2>
 
         <section className="interviewer">

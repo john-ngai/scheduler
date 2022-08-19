@@ -11,6 +11,8 @@ The Interview Scheduler allows a user to book and cancel interviews. Built using
 * react
 * react-dom
 * react-scripts
+* react-redux
+* @reduxjs/toolkit
 * axios
 * classnames
 * normalize.css
